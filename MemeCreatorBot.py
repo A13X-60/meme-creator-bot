@@ -1,4 +1,3 @@
-#bot = telebot.TeleBot('617312566:AAEvNLoOwmngACDkGcJfDkqiUhhV9i28yS8')
 # -*- coding: utf-8 -*-
 import redis
 import os
