@@ -100,7 +100,7 @@ def choose_meme(message):
 @bot.callback_query_handler(func=lambda call: True)
 def button_callback(call):
     bot.answer_callback_query(call.id)
-    bot.delete_message(call.message.chat.id, call.message.id)
+    bot.delete_message(call.message.chat.id, call.message.message_id)
     curr_meme = call.data
     bot.send_message(call.message.chat.id, 'Fill the following text areas(type \"-\" to leave the area blank):')
     bot.send_photo(call.message.chat.id, open('MemeTextFields/' + curr_meme + '.png', 'rb'))
