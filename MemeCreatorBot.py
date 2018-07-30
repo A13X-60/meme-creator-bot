@@ -104,6 +104,7 @@ def create_pic_available_memes():
                           (0, 0, 0), font_title)
             del meme
     background.save('Memes.png')
+    print('Memes.png was successfully saved.')
     del background
     del txt
 
