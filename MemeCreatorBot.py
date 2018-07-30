@@ -103,7 +103,7 @@ def create_pic_available_memes():
                           list(Memes.keys())[i * memes_per_row + j].upper(),
                           (0, 0, 0), font_title)
             del meme
-    background.save('Memes', 'PNG')
+    background.save('Memes.png')
     del background
     del txt
 
