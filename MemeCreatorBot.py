@@ -174,7 +174,7 @@ def button_callback(call):
         bot.register_next_step_handler(msg, read_text, num_of_fields_to_read, area, curr_meme, meme_texts)
 
 
-@bot.message_handler(func=lambda: True, content_types=['text'])
+@bot.message_handler(func=lambda m: True, content_types=['text'])
 def respond_to_message(message):
     bot.send_message(message.chat.id, 'I don\'t understand you...Is this loss??')
 
