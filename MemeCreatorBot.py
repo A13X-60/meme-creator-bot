@@ -71,6 +71,46 @@ Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': 
          'man bear fish': man_bear_fish, 'upvotes': upvotes, 'who killed hannibal': who_killed_hannibal}
 
 
+def create_pic_available_memes():
+    memes_per_row = 3
+    font_size = 40
+    txt = Image.new("RGBA", (281, 42), (255, 255, 255, 0))
+    draw = ImageDraw.Draw(txt)
+    font_head = ImageFont.truetype('impact.ttf', 40)
+    font_title = ImageFont.truetype('impact.ttf', font_size)
+    maxstr = max(list(Memes.keys()), key=len)
+    while draw.textsize(maxstr, font_title)[0] > 256 or draw.textsize(maxstr, font_title)[1] > 30:
+        font_size -= 1
+        font_title = ImageFont.truetype('impact.ttf', font_size)
+    head_w, head_h = draw.textsize('Available memes', font_head)
+    background = Image.new('RGBA', (memes_per_row * 256 + 10 * (memes_per_row + 1),
+                                    head_h + 20 + (math.ceil(len(list(Memes.keys())) / memes_per_row)) * (256 + 50)),
+                           (255, 255, 255))
+    img_draw = ImageDraw.Draw(background)
+    img_draw.text(((background.size[0] - head_w) / 2, 10), 'Available memes', (0, 0, 0), font_head)
+    header_bottom = 20 + head_h
+    for i in range(math.ceil(len(list(Memes.keys())) / memes_per_row)):
+        for j in range(memes_per_row):
+            if i * memes_per_row + j > len(list(Memes.keys())) - 1:
+                break
+            meme = Image.open('MemeTemplates/' + list(Memes.keys())[i * memes_per_row + j] + '.png')
+            meme.thumbnail((256, 256), Image.ANTIALIAS)
+            background.paste(meme, (256 * j + 10 * (j + 1) + (256 - meme.size[0]) // 2,
+                                    header_bottom + (256 + 50) * i + (256 - meme.size[1]) // 2))
+            img_draw.text((256 * j + 10 * (j + 1) + (
+                    256 - draw.textsize(list(Memes.keys())[i * memes_per_row + j], font_title)[0]) // 2,
+                           (header_bottom + (256 + 5)) + i * (256 + 50)),
+                          list(Memes.keys())[i * memes_per_row + j].upper(),
+                          (0, 0, 0), font_title)
+            del meme
+    background.save('Memes', 'PNG')
+    del background
+    del txt
+
+
+create_pic_available_memes()
+
+
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     bot.reply_to(message, 'Hi there!')
@@ -109,45 +149,8 @@ def choose_meme(message):
 
 
 @bot.message_handler(commands=['available'])
-def available_memes(message):
-    memes_per_row = 3
-    font_size = 40
-    txt = Image.new("RGBA", (281, 42), (255, 255, 255, 0))
-    draw = ImageDraw.Draw(txt)
-    font_head = ImageFont.truetype('impact.ttf', 40)
-    font_title = ImageFont.truetype('impact.ttf', font_size)
-    maxstr = max(list(Memes.keys()), key=len)
-    while draw.textsize(maxstr, font_title)[0] > 256 or draw.textsize(maxstr, font_title)[1] > 30:
-        font_size -= 1
-        font_title = ImageFont.truetype('impact.ttf', font_size)
-    head_w, head_h = draw.textsize('Available memes', font_head)
-    background = Image.new('RGBA', (memes_per_row * 256 + 10 * (memes_per_row + 1),
-                                    head_h + 20 + (math.ceil(len(list(Memes.keys())) / memes_per_row)) * (256 + 50)),
-                           (255, 255, 255))
-    img_draw = ImageDraw.Draw(background)
-    img_draw.text(((background.size[0] - head_w) / 2, 10), 'Available memes', (0, 0, 0), font_head)
-    header_bottom = 20 + head_h
-    for i in range(math.ceil(len(list(Memes.keys())) / memes_per_row)):
-        for j in range(memes_per_row):
-            if i * memes_per_row + j > len(list(Memes.keys())) - 1:
-                break
-            meme = Image.open('MemeTemplates/' + list(Memes.keys())[i * memes_per_row + j] + '.png')
-            meme.thumbnail((256, 256), Image.ANTIALIAS)
-            background.paste(meme, (256 * j + 10 * (j + 1) + (256 - meme.size[0]) // 2,
-                                    header_bottom + (256 + 50) * i + (256 - meme.size[1]) // 2))
-            img_draw.text((256 * j + 10 * (j + 1) + (
-                    256 - draw.textsize(list(Memes.keys())[i * memes_per_row + j], font_title)[0]) // 2,
-                           (header_bottom + (256 + 5)) + i * (256 + 50)),
-                          list(Memes.keys())[i * memes_per_row + j].upper(),
-                          (0, 0, 0), font_title)
-            del meme
-    bio = BytesIO()
-    bio.name = 'memes.png'
-    background.save(bio, 'PNG')
-    bio.seek(0)
-    bot.send_photo(message.chat.id, bio)
-    del background
-    del txt
+def send_available_memes(message):
+    bot.send_photo(message.chat.id, open('Memes.png', 'rb'))
 
 
 @bot.callback_query_handler(func=lambda call: True)
