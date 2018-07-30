@@ -57,7 +57,7 @@ who_killed_hannibal = Meme({(319, 275): (513, 178), (307, 234): (83, 229), (930,
 american_chopper_argument = Meme(
     {(232, 88): (12, 185), (311, 108): (185, 477), (282, 90): (1, 790), (228, 118): (1, 1066), (281, 98): (219, 1374)},
     'impact.ttf', (0, 0, 0))
-fantasy_painting_object_labeling = Meme({(260, 224): (228, 96), (242, 153): (67, 506)}, 'impact.ttf', (255, 255, 255))
+battle_with_giant = Meme({(260, 224): (228, 96), (242, 153): (67, 506)}, 'impact.ttf', (255, 255, 255))
 this_is_brilliant_but_i_like_this = Meme({(270, 166): (319, 127), (244, 172): (32, 460)}, 'impact.ttf', (255, 255, 255))
 Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': expanding_brain,
          'who would win': who_would_win, 'the rock driving': the_rock_driving, 'sleeping shaq': sleeping_shaq,
@@ -67,8 +67,7 @@ Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': 
          'trump presenting': trump_presenting, 'double d facts book': double_d_facts_book, 'water gun': water_gun,
          'man bear fish': man_bear_fish, 'upvotes': upvotes, 'who killed hannibal': who_killed_hannibal,
          'american chopper argument': american_chopper_argument,
-         'fantasy painting object labeling': fantasy_painting_object_labeling,
-         'this is brilliant but i like this': this_is_brilliant_but_i_like_this}
+         'battle with giant': battle_with_giant, 'this is brilliant but i like this': this_is_brilliant_but_i_like_this}
 
 
 def create_pic_available_memes():
@@ -115,9 +114,9 @@ create_pic_available_memes()
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     try:
-        bot.reply_to(message, 'Hi there, ' + message.from_user.first_name + '!\nGo on and make some dank shit here!')
-    except Exception as err:
-        bot.reply_to(message, 'Hi there!')
+        bot.reply_to(message, 'Hi there, ' + message.from_user.first_name + '! Go on and make some dank shit here!\n\nUse /creatememe\n\nMake yourself familiar with all available memes with /available')
+    except:
+        bot.reply_to(message, 'Hi there!! Go on and make some dank shit here!\n\nUse /creatememe\n\nMake yourself familiar with all available memes with /available')
 
 
 @bot.message_handler(commands=['help'])
@@ -173,6 +172,11 @@ def button_callback(call):
         meme_texts = list()
         msg = bot.send_message(call.message.chat.id, 'Enter the text for the area 1:', reply_markup=markup)
         bot.register_next_step_handler(msg, read_text, num_of_fields_to_read, area, curr_meme, meme_texts)
+
+
+@bot.message_handler(func=lambda: True, content_types=['text'])
+def respond_to_message(message):
+    bot.send_message(message.chat.id, 'I don\'t understand you...Is this loss??')
 
 
 def read_text(message, num_of_fields_to_read, area, curr_meme, meme_texts):
