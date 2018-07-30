@@ -8,15 +8,7 @@ from telebot import types
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 
-# import some_api_lib
-# import ...
-
-# Example of your code beginning
-#           Config vars
 token = os.environ['TELEGRAM_TOKEN']
-#             ...
-
-# If you use redis, install this add-on https://elements.heroku.com/addons/heroku-redis
 r = redis.from_url(os.environ.get("REDIS_URL"))
 
 #       Your bot code below
@@ -62,17 +54,25 @@ man_bear_fish = Meme({(561, 116): (103, 388), (333, 114): (219, 219), (232, 253)
 upvotes = Meme({(177, 45): (8, 392)}, 'impact.ttf', (0, 0, 0))
 who_killed_hannibal = Meme({(319, 275): (513, 178), (307, 234): (83, 229), (930, 118): (15, 958)}, 'impact.ttf',
                            (255, 255, 255))
+american_chopper_argument = Meme(
+    {(232, 88): (12, 185), (311, 108): (185, 477), (282, 90): (1, 790), (228, 118): (1, 1066), (281, 98): (219, 1374)},
+    'impact.ttf', (0, 0, 0))
+fantasy_painting_object_labeling = Meme({(260, 224): (228, 96), (242, 153): (67, 506)}, 'impact.ttf', (255, 255, 255))
+this_is_brilliant_but_i_like_this = Meme({(270, 166): (319, 127), (244, 172): (32, 460)}, 'impact.ttf', (255, 255, 255))
 Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': expanding_brain,
          'who would win': who_would_win, 'the rock driving': the_rock_driving, 'sleeping shaq': sleeping_shaq,
          'nut button': nut_button, 'batman slapping robin': batman_slapping_robin, 'is this a pigeon': is_this_a_pigeon,
          'distracted boyfriend': distracted_boyfriend, 'croatia bosnia border': croatia_bosnia_border,
          'left exit 12 off ramp': left_exit_12_off_ramp, 'hard to swallow pills': hard_to_swallow_pills,
          'trump presenting': trump_presenting, 'double d facts book': double_d_facts_book, 'water gun': water_gun,
-         'man bear fish': man_bear_fish, 'upvotes': upvotes, 'who killed hannibal': who_killed_hannibal}
+         'man bear fish': man_bear_fish, 'upvotes': upvotes, 'who killed hannibal': who_killed_hannibal,
+         'american chopper argument': american_chopper_argument,
+         'fantasy painting object labeling': fantasy_painting_object_labeling,
+         'this is brilliant but i like this': this_is_brilliant_but_i_like_this}
 
 
 def create_pic_available_memes():
-    memes_per_row = 3
+    memes_per_row = 5
     font_size = 40
     txt = Image.new("RGBA", (281, 42), (255, 255, 255, 0))
     draw = ImageDraw.Draw(txt)
@@ -114,7 +114,10 @@ create_pic_available_memes()
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    bot.reply_to(message, 'Hi there!')
+    try:
+        bot.reply_to(message, 'Hi there, ' + message.from_user.first_name + '!\nGo on and make some dank shit here!')
+    except Exception as err:
+        bot.reply_to(message, 'Hi there!')
 
 
 @bot.message_handler(commands=['help'])
@@ -127,7 +130,8 @@ def help_info(message):
 def open_buttons(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     btn1 = types.KeyboardButton('Create meme')
-    markup.add(btn1)
+    btn2 = types.KeyboardButton('List of available memes')
+    markup.add(btn1, btn2)
     bot.send_message(message.chat.id, 'Select an option', reply_markup=markup)
 
 
@@ -143,12 +147,13 @@ def choose_meme(message):
     markup = types.InlineKeyboardMarkup()
     button_list = list()
     for i in Memes.keys():
-        btn = types.InlineKeyboardButton(text=i[0].upper() + i[1:], callback_data=i)
+        btn = types.InlineKeyboardButton(text=i.upper(), callback_data=i)
         button_list.append(btn)
     markup.add(*[i for i in button_list])
     bot.send_message(message.chat.id, 'Select the meme from database', reply_markup=markup)
 
 
+@bot.message_handler(func=lambda m: m.text == 'List of available memes')
 @bot.message_handler(commands=['available'])
 def send_available_memes(message):
     bot.send_photo(message.chat.id, open('Memes.png', 'rb'))
