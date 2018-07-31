@@ -8,7 +8,6 @@ from telebot import types
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 
-
 token = os.environ['TELEGRAM_TOKEN']
 r = redis.from_url(os.environ.get("REDIS_URL"))
 
@@ -114,7 +113,8 @@ create_pic_available_memes()
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    bot.reply_to(message, 'Hi there, *' + message.from_user.first_name + '*! Go on and make some 😂😂👌👌😂_dank shit_💯💯 here!\n\nUse */creatememe*\n\nMake yourself familiar with all available _memes_ with */available*')
+    bot.send_message(message.chat.id, parse_mode='Markdown',
+                 text='Hi there, *' + message.from_user.first_name + '*! Go on and make some 😂😂👌👌😂_dank shit_💯💯 here!\n\nUse */creatememe*\n\nMake yourself familiar with all available _memes_ with */available*')
 
 
 @bot.message_handler(commands=['help'])
@@ -160,12 +160,14 @@ def send_available_memes(message):
 
 @bot.message_handler(func=lambda m: m.text == '🤔Information🤔')
 def info(message):
-    bot.send_message(message.chat.id, 'Bot made by @TheSubliminal\nFeel free to send me any suggestions or bug reports.\n\nRate this bot here: https://telegram.me/storebot?start=MemeCreate_bot')
+    bot.send_message(message.chat.id,
+                     'Bot made by @TheSubliminal\nFeel free to send me any suggestions or bug reports.\n\nRate this bot here: https://telegram.me/storebot?start=MemeCreate_bot')
 
 
 @bot.message_handler(func=lambda m: m.text == '☺Donations☺')
 def donation_info(message):
-    bot.send_message(message.chat.id, 'If you want to thank me for the experience you had with this bot you can donate me via:\n\n Bitcoin:\n*1HvF4uSHNz9z1zafqSr2N8rxXyHcqAGrmY*\n\nEthereum:\n*0x5714Dde9B12Bf629F185CeE90f263C05816B1616*')
+    bot.send_message(message.chat.id, parse_mode='Markdown',
+                     text='If you want to thank me for the experience you had with this bot you can donate me via:\n\n Bitcoin:\n*1HvF4uSHNz9z1zafqSr2N8rxXyHcqAGrmY*\n\nEthereum:\n*0x5714Dde9B12Bf629F185CeE90f263C05816B1616*')
 
 
 @bot.callback_query_handler(func=lambda call: True)
