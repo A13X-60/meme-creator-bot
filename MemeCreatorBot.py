@@ -8,6 +8,7 @@ from telebot import types
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 
+
 token = os.environ['TELEGRAM_TOKEN']
 r = redis.from_url(os.environ.get("REDIS_URL"))
 
@@ -113,10 +114,7 @@ create_pic_available_memes()
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    try:
-        bot.reply_to(message, 'Hi there, ' + message.from_user.first_name + '! Go on and make some dank shit here!\n\nUse /creatememe\n\nMake yourself familiar with all available memes with /available')
-    except:
-        bot.reply_to(message, 'Hi there!! Go on and make some dank shit here!\n\nUse /creatememe\n\nMake yourself familiar with all available memes with /available')
+    bot.reply_to(message, 'Hi there, *' + message.from_user.first_name + '*! Go on and make some 😂😂👌👌😂_dank shit_💯💯 here!\n\nUse */creatememe*\n\nMake yourself familiar with all available _memes_ with */available*')
 
 
 @bot.message_handler(commands=['help'])
@@ -128,9 +126,11 @@ def help_info(message):
 @bot.message_handler(commands=['menu'])
 def open_buttons(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    btn1 = types.KeyboardButton('Create meme')
-    btn2 = types.KeyboardButton('List of available memes')
-    markup.add(btn1, btn2)
+    btn1 = types.KeyboardButton('😂Create meme😂')
+    btn2 = types.KeyboardButton('😎List of available memes😎')
+    btn3 = types.KeyboardButton('🤔Information🤔')
+    btn4 = types.KeyboardButton('☺Donations☺')
+    markup.add(btn1, btn2, btn3, btn4)
     bot.send_message(message.chat.id, 'Select an option', reply_markup=markup)
 
 
@@ -141,7 +141,7 @@ def cancel(message):
 
 
 @bot.message_handler(commands=['creatememe'])
-@bot.message_handler(func=lambda m: m.text == 'Create meme')
+@bot.message_handler(func=lambda m: m.text == '😂Create meme😂')
 def choose_meme(message):
     markup = types.InlineKeyboardMarkup()
     button_list = list()
@@ -152,10 +152,20 @@ def choose_meme(message):
     bot.send_message(message.chat.id, 'Select the meme from database', reply_markup=markup)
 
 
-@bot.message_handler(func=lambda m: m.text == 'List of available memes')
+@bot.message_handler(func=lambda m: m.text == '😎List of available memes😎')
 @bot.message_handler(commands=['available'])
 def send_available_memes(message):
     bot.send_photo(message.chat.id, open('Memes.png', 'rb'))
+
+
+@bot.message_handler(func=lambda m: m.text == '🤔Information🤔')
+def info(message):
+    bot.send_message(message.chat.id, 'Bot made by @TheSubliminal\nFeel free to send me any suggestions or bug reports.\n\nRate this bot here: https://telegram.me/storebot?start=MemeCreate_bot')
+
+
+@bot.message_handler(func=lambda m: m.text == '☺Donations☺')
+def donation_info(message):
+    bot.send_message(message.chat.id, 'If you want to thank me for the experience you had with this bot you can donate me via:\n\n Bitcoin:\n*1HvF4uSHNz9z1zafqSr2N8rxXyHcqAGrmY*\n\nEthereum:\n*0x5714Dde9B12Bf629F185CeE90f263C05816B1616*')
 
 
 @bot.callback_query_handler(func=lambda call: True)
