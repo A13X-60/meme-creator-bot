@@ -114,7 +114,7 @@ create_pic_available_memes()
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     bot.send_message(message.chat.id, parse_mode='Markdown',
-                 text='Hi there, *' + message.from_user.first_name + '*! Go on and make some 😂😂👌👌😂_dank shit_💯💯 here!\n\nUse */creatememe*\n\nMake yourself familiar with all available _memes_ with */available*')
+                 text='Hi there, *' + message.from_user.first_name + '*! Go on and make some 😂😂👌👌😂_dank shit_💯💯 here!\n\nUse /creatememe\n\nMake yourself familiar with all available _memes_ with /available')
 
 
 @bot.message_handler(commands=['help'])
@@ -125,7 +125,7 @@ def help_info(message):
 
 @bot.message_handler(commands=['menu'])
 def open_buttons(message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True, row_width=2)
     btn1 = types.KeyboardButton('😂Create meme😂')
     btn2 = types.KeyboardButton('😎List of available memes😎')
     btn3 = types.KeyboardButton('🤔Information🤔')
@@ -167,7 +167,7 @@ def info(message):
 @bot.message_handler(func=lambda m: m.text == '☺Donations☺')
 def donation_info(message):
     bot.send_message(message.chat.id, parse_mode='Markdown',
-                     text='If you want to thank me for the experience you had with this bot you can donate me via:\n\n Bitcoin:\n*1HvF4uSHNz9z1zafqSr2N8rxXyHcqAGrmY*\n\nEthereum:\n*0x5714Dde9B12Bf629F185CeE90f263C05816B1616*')
+                     text='If you want to thank me for the experience you had with this bot you can donate me via:\n\nBitcoin:\n*1HvF4uSHNz9z1zafqSr2N8rxXyHcqAGrmY*\n\nEthereum:\n*0x5714Dde9B12Bf629F185CeE90f263C05816B1616*')
 
 
 @bot.callback_query_handler(func=lambda call: True)
