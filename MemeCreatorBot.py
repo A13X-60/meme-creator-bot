@@ -109,6 +109,7 @@ def create_pic_available_memes():
 
 
 create_pic_available_memes()
+available_memes_file_id = None
 
 
 @bot.message_handler(commands=['start'])
@@ -155,7 +156,11 @@ def choose_meme(message):
 @bot.message_handler(func=lambda m: m.text == '😎List of available memes😎')
 @bot.message_handler(commands=['available'])
 def send_available_memes(message):
-    bot.send_photo(message.chat.id, open('Memes.png', 'rb'))
+    global available_memes_file_id
+    if available_memes_file_id is None:
+        available_memes_file_id = bot.send_photo(message.chat.id, open('Memes.png', 'rb')).photo[0].file_id
+    else:
+        bot.send_photo(message.chat.id, available_memes_file_id)
 
 
 @bot.message_handler(func=lambda m: m.text == '🤔Information🤔')
