@@ -25,6 +25,7 @@ class Meme:
         self.areas = areas
         self.font_name = font_name
         self.font_colour = font_colour
+        self.text_fields_file_id = None
 
 
 drake = Meme({(319, 256): (322, 0), (319, 289): (322, 261)}, 'impact.ttf', (0, 0, 0))
@@ -182,7 +183,10 @@ def button_callback(call):
         bot.delete_message(call.message.chat.id, call.message.message_id)
         curr_meme = call.data
         bot.send_message(call.message.chat.id, 'Fill the following text areas(type \"-\" to leave the area blank):')
-        bot.send_photo(call.message.chat.id, open('MemeTextFields/' + curr_meme + '.png', 'rb'))
+        if Memes[curr_meme].text_fields_file_id is None:
+            Memes[curr_meme].text_fields_file_id = bot.send_photo(call.message.chat.id, open('MemeTextFields/' + curr_meme + '.png', 'rb')).photo[0].file_id
+        else:
+            bot.send_photo(call.message.chat.id, Memes[curr_meme].text_fields_file_id)
         area = 1
         num_of_fields_to_read = len(Memes[curr_meme].areas.keys())
         markup = types.ForceReply()
