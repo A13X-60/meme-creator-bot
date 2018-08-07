@@ -81,7 +81,7 @@ Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': 
          'trojan horse': trojan_horse, 'homer\'s fat': homers_fat, 'you can\'t defeat me': you_cant_defeat_me}
 
 # Menu reply markup
-menu = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True, row_width=2)
+menu = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
 btn1 = types.KeyboardButton('😂Create meme😂')
 btn2 = types.KeyboardButton('😎List of available memes😎')
 btn3 = types.KeyboardButton('🤔Information🤔')
@@ -135,14 +135,13 @@ available_memes_file_id = None
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     bot.send_message(message.chat.id, parse_mode='Markdown',
-                     text='Hi there, *' + message.from_user.first_name + '*! Go on and make some 😂😂👌👌😂_dank shit_💯💯 here!\n\nUse /creatememe\n\nMake yourself familiar with all available _memes_ with /available',
-                     reply_markup=menu)
+                     text='Hi there, *' + message.from_user.first_name + '*! Go on and make some 😂😂👌👌😂_dank shit_💯💯 here!\n\nUse /creatememe\n\nMake yourself familiar with all available _memes_ with /available')
 
 
 @bot.message_handler(commands=['help'])
 def help_info(message):
     bot.send_message(message.chat.id,
-                     '/menu - All bot\'s options\n/creatememe - Create a meme from template\n/cancel - Cancels current action\n/available - List of the all available memes')
+                     '/creatememe - Create a meme from template\n/available - List of the all available memes\n/cancel - Cancels current action')
 
 
 @bot.message_handler(commands=['cancel'])
