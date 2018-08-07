@@ -135,7 +135,8 @@ available_memes_file_id = None
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     bot.send_message(message.chat.id, parse_mode='Markdown',
-                     text='Hi there, *' + message.from_user.first_name + '*! Go on and make some 😂😂👌👌😂_dank shit_💯💯 here!\n\nUse /creatememe\n\nMake yourself familiar with all available _memes_ with /available')
+                     text='Hi there, *' + message.from_user.first_name + '*! Go on and make some 😂😂👌👌😂_dank shit_💯💯 here!\n\nUse /creatememe\n\nMake yourself familiar with all available _memes_ with /available',
+                     reply_markup=menu)
 
 
 @bot.message_handler(commands=['help'])
