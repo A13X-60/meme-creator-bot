@@ -65,6 +65,8 @@ trojan_horse = Meme({(349, 131): (43, 207), (378, 147): (26, 346), (343, 135): (
                     'impact.ttf', (255, 255, 255))
 homers_fat = Meme({(222, 99): (426, 157), (284, 199): (130, 128), (319, 236): (124, 594)}, 'impact.ttf',
                   (255, 255, 255))
+you_cant_defeat_me = Meme({(262, 123): (221, 136), (243, 119): (431, 439), (357, 225): (195, 629)}, 'impact.ttf',
+                          (255, 255, 255))
 Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': expanding_brain,
          'who would win': who_would_win, 'the rock driving': the_rock_driving, 'sleeping shaq': sleeping_shaq,
          'nut button': nut_button, 'batman slapping robin': batman_slapping_robin, 'is this a pigeon': is_this_a_pigeon,
@@ -74,7 +76,7 @@ Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': 
          'man bear fish': man_bear_fish, 'upvotes': upvotes, 'who killed hannibal': who_killed_hannibal,
          'american chopper argument': american_chopper_argument,
          'battle with giant': battle_with_giant, 'this is brilliant but i like this': this_is_brilliant_but_i_like_this,
-         'trojan horse': trojan_horse, 'homer\'s fat': homers_fat}
+         'trojan horse': trojan_horse, 'homer\'s fat': homers_fat, 'you can\'t defeat me': you_cant_defeat_me}
 
 
 def create_pic_available_memes():
@@ -121,8 +123,15 @@ available_memes_file_id = None
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True, row_width=2)
+    btn1 = types.KeyboardButton('😂Create meme😂')
+    btn2 = types.KeyboardButton('😎List of available memes😎')
+    btn3 = types.KeyboardButton('🤔Information🤔')
+    btn4 = types.KeyboardButton('☺Donations☺')
+    markup.add(btn1, btn2, btn3, btn4)
     bot.send_message(message.chat.id, parse_mode='Markdown',
-                     text='Hi there, *' + message.from_user.first_name + '*! Go on and make some 😂😂👌👌😂_dank shit_💯💯 here!\n\nUse /creatememe\n\nMake yourself familiar with all available _memes_ with /available')
+                     text='Hi there, *' + message.from_user.first_name + '*! Go on and make some 😂😂👌👌😂_dank shit_💯💯 here!\n\nUse /creatememe\n\nMake yourself familiar with all available _memes_ with /available',
+                     reply_markup=markup)
 
 
 @bot.message_handler(commands=['help'])
@@ -131,21 +140,9 @@ def help_info(message):
                      '/menu - All bot\'s options\n/creatememe - Create a meme from template\n/cancel - Cancels current action\n/available - List of the all available memes')
 
 
-@bot.message_handler(commands=['menu'])
-def open_buttons(message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True, row_width=2)
-    btn1 = types.KeyboardButton('😂Create meme😂')
-    btn2 = types.KeyboardButton('😎List of available memes😎')
-    btn3 = types.KeyboardButton('🤔Information🤔')
-    btn4 = types.KeyboardButton('☺Donations☺')
-    markup.add(btn1, btn2, btn3, btn4)
-    bot.send_message(message.chat.id, 'Select an option', reply_markup=markup)
-
-
 @bot.message_handler(commands=['cancel'])
 def cancel(message):
-    markup = types.ReplyKeyboardRemove()
-    bot.send_message(message.chat.id, 'Current action was cancelled.', reply_markup=markup)
+    bot.send_message(message.chat.id, 'No action to cancel.')
 
 
 @bot.message_handler(commands=['creatememe'])
