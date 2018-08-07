@@ -190,7 +190,7 @@ def button_callback(call):
         bot.delete_message(call.message.chat.id, call.message.message_id)
         curr_meme = call.data
         bot.send_message(call.message.chat.id,
-                         'Fill the following content areas.Send me a photo or a text.\n\n(type \"-\" to leave the area blank):')
+                         'Fill the following content areas. Send me a photo or a text.\n\n(type \"-\" to leave the area blank)')
         if Memes[curr_meme].text_fields_file_id is None:
             Memes[curr_meme].text_fields_file_id = \
                 bot.send_photo(call.message.chat.id, open('MemeTextFields/' + curr_meme + '.png', 'rb')).photo[
