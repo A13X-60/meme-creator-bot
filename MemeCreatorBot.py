@@ -218,7 +218,7 @@ def content_injection(message, num_of_fields_to_read, area, curr_meme, meme_cont
     if message.text == '-':
         meme_content.append('')
     elif message.text == '/cancel':
-        bot.send_message(message.chat.id, 'Current action was cancelled.')
+        bot.send_message(message.chat.id, 'Current action was cancelled.', reply_markup=menu)
         num_of_fields_to_read = -1
     elif message.content_type == 'photo':
         file_id = message.photo[-1].file_id
