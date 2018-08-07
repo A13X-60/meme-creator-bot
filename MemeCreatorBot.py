@@ -237,10 +237,10 @@ def content_injection(message, num_of_fields_to_read, area, curr_meme, meme_cont
 def create_meme(message, curr_meme, meme_content):
     j = 0
     font_size = 40
-    add_text = True
     meme = Image.open('MemeTemplates/' + curr_meme + '.png')
     font_type = ImageFont.truetype(Memes[curr_meme].font_name, font_size)
     for WH, position in Memes[curr_meme].areas.items():
+        add_text = True
         width, height = WH[0], WH[1]
         im = Image.new("RGBA", (width, height), (255, 255, 255, 0))
         draw = ImageDraw.Draw(im)
