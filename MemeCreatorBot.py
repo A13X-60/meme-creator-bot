@@ -21,6 +21,8 @@ bot = telebot.TeleBot(token)
 print('Starting bot:', bot.get_me())
 
 
+# 'Areas' variable is a dict structured like this:
+#                   {(width_of_the_area, height_of_the_area): (x_of_the_left_top_corner, y_of_the_left_top_corner), ...}
 class Meme:
     def __init__(self, areas, font_name, font_colour):
         self.areas = areas
@@ -78,7 +80,16 @@ Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': 
          'battle with giant': battle_with_giant, 'this is brilliant but i like this': this_is_brilliant_but_i_like_this,
          'trojan horse': trojan_horse, 'homer\'s fat': homers_fat, 'you can\'t defeat me': you_cant_defeat_me}
 
+# Menu reply markup
+menu = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True, row_width=2)
+btn1 = types.KeyboardButton('😂Create meme😂')
+btn2 = types.KeyboardButton('😎List of available memes😎')
+btn3 = types.KeyboardButton('🤔Information🤔')
+btn4 = types.KeyboardButton('☺Donations☺')
+menu.add(btn1, btn2, btn3, btn4)
 
+
+# A function which creates a list of the available memes on the bot's start up
 def create_pic_available_memes():
     memes_per_row = 5
     font_size = 40
@@ -123,15 +134,9 @@ available_memes_file_id = None
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True, row_width=2)
-    btn1 = types.KeyboardButton('😂Create meme😂')
-    btn2 = types.KeyboardButton('😎List of available memes😎')
-    btn3 = types.KeyboardButton('🤔Information🤔')
-    btn4 = types.KeyboardButton('☺Donations☺')
-    markup.add(btn1, btn2, btn3, btn4)
     bot.send_message(message.chat.id, parse_mode='Markdown',
                      text='Hi there, *' + message.from_user.first_name + '*! Go on and make some 😂😂👌👌😂_dank shit_💯💯 here!\n\nUse /creatememe\n\nMake yourself familiar with all available _memes_ with /available',
-                     reply_markup=markup)
+                     reply_markup=menu)
 
 
 @bot.message_handler(commands=['help'])
@@ -230,7 +235,7 @@ def content_injection(message, num_of_fields_to_read, area, curr_meme, meme_cont
                                reply_markup=markup)
         bot.register_next_step_handler(msg, content_injection, num_of_fields_to_read, area, curr_meme, meme_content)
     elif num_of_fields_to_read == 0:
-        bot.send_message(message.chat.id, 'Your meme')
+        bot.send_message(message.chat.id, 'Your meme', reply_markup=menu)
         create_meme(message, curr_meme, meme_content)
     else:
         pass
