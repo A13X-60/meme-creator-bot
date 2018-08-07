@@ -41,7 +41,7 @@ batman_slapping_robin = Meme({(167, 75): (21, 3), (169, 82): (223, 2)}, 'impact.
 is_this_a_pigeon = Meme({(326, 110): (28, 65), (217, 84): (416, 91), (568, 90): (33, 478)}, 'impact.ttf',
                         (255, 255, 255))
 distracted_boyfriend = Meme({(161, 88): (97, 271), (150, 62): (309, 163), (151, 75): (449, 222)}, 'impact.ttf',
-                            (0, 0, 0))
+                            (255, 255, 255))
 croatia_bosnia_border = Meme({(418, 157): (305, 128), (449, 137): (360, 370), (528, 130): (40, 623)}, 'impact.ttf',
                              (0, 0, 0))
 left_exit_12_off_ramp = Meme({(262, 181): (101, 88), (276, 182): (369, 88), (427, 143): (195, 501)}, 'impact.ttf',
@@ -188,7 +188,8 @@ def button_callback(call):
         bot.answer_callback_query(call.id)
         bot.delete_message(call.message.chat.id, call.message.message_id)
         curr_meme = call.data
-        bot.send_message(call.message.chat.id, 'Fill the following content areas(type \"-\" to leave the area blank):')
+        bot.send_message(call.message.chat.id,
+                         'Fill the following content areas.Send me a photo or a text.\n\n(type \"-\" to leave the area blank):')
         if Memes[curr_meme].text_fields_file_id is None:
             Memes[curr_meme].text_fields_file_id = \
                 bot.send_photo(call.message.chat.id, open('MemeTextFields/' + curr_meme + '.png', 'rb')).photo[
@@ -217,12 +218,16 @@ def content_injection(message, num_of_fields_to_read, area, curr_meme, meme_cont
     elif message.text == '/cancel':
         bot.send_message(message.chat.id, 'Current action was cancelled.')
         num_of_fields_to_read = -1
-    elif message.photo is not None:
+    elif message.content_type == 'photo':
         file_id = message.photo[-1].file_id
         file = bot.get_file(file_id)
         meme_content.append(file.file_path)
-    else:
+    elif message.content_type == 'text':
         meme_content.append(message.text)
+    else:
+        bot.send_message(message.chat.id, 'Please, try to send me some text or a picture.')
+        num_of_fields_to_read += 1
+        area -= 1
     if num_of_fields_to_read > 0:
         msg = bot.send_message(message.chat.id, 'Enter the content for the area ' + str(area) + ':',
                                reply_markup=markup)
