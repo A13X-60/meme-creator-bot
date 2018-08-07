@@ -62,6 +62,8 @@ battle_with_giant = Meme({(260, 224): (228, 96), (242, 153): (67, 506)}, 'impact
 this_is_brilliant_but_i_like_this = Meme({(270, 166): (319, 127), (244, 172): (32, 460)}, 'impact.ttf', (255, 255, 255))
 trojan_horse = Meme({(349, 131): (43, 207), (378, 147): (26, 346), (343, 135): (368, 41), (311, 155): (363, 527)},
                     'impact.ttf', (255, 255, 255))
+homers_fat = Meme({(222, 99): (426, 157), (284, 199): (130, 128), (319, 236): (124, 594)}, 'impact.ttf',
+                  (255, 255, 255))
 Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': expanding_brain,
          'who would win': who_would_win, 'the rock driving': the_rock_driving, 'sleeping shaq': sleeping_shaq,
          'nut button': nut_button, 'batman slapping robin': batman_slapping_robin, 'is this a pigeon': is_this_a_pigeon,
@@ -71,7 +73,7 @@ Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': 
          'man bear fish': man_bear_fish, 'upvotes': upvotes, 'who killed hannibal': who_killed_hannibal,
          'american chopper argument': american_chopper_argument,
          'battle with giant': battle_with_giant, 'this is brilliant but i like this': this_is_brilliant_but_i_like_this,
-         'trojan horse': trojan_horse}
+         'trojan horse': trojan_horse, 'homer\'s fat': homers_fat}
 
 
 def create_pic_available_memes():
@@ -188,7 +190,8 @@ def button_callback(call):
         bot.send_message(call.message.chat.id, 'Fill the following text areas(type \"-\" to leave the area blank):')
         if Memes[curr_meme].text_fields_file_id is None:
             Memes[curr_meme].text_fields_file_id = \
-            bot.send_photo(call.message.chat.id, open('MemeTextFields/' + curr_meme + '.png', 'rb')).photo[0].file_id
+                bot.send_photo(call.message.chat.id, open('MemeTextFields/' + curr_meme + '.png', 'rb')).photo[
+                    0].file_id
         else:
             bot.send_photo(call.message.chat.id, Memes[curr_meme].text_fields_file_id)
         area = 1
