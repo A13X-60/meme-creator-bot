@@ -4,6 +4,7 @@ import os
 import telebot
 import time
 import math
+import requests
 from telebot import types
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
@@ -187,7 +188,7 @@ def button_callback(call):
         bot.answer_callback_query(call.id)
         bot.delete_message(call.message.chat.id, call.message.message_id)
         curr_meme = call.data
-        bot.send_message(call.message.chat.id, 'Fill the following text areas(type \"-\" to leave the area blank):')
+        bot.send_message(call.message.chat.id, 'Fill the following content areas(type \"-\" to leave the area blank):')
         if Memes[curr_meme].text_fields_file_id is None:
             Memes[curr_meme].text_fields_file_id = \
                 bot.send_photo(call.message.chat.id, open('MemeTextFields/' + curr_meme + '.png', 'rb')).photo[
@@ -197,9 +198,9 @@ def button_callback(call):
         area = 1
         num_of_fields_to_read = len(Memes[curr_meme].areas.keys())
         markup = types.ForceReply()
-        meme_texts = list()
-        msg = bot.send_message(call.message.chat.id, 'Enter the text for the area 1:', reply_markup=markup)
-        bot.register_next_step_handler(msg, read_text, num_of_fields_to_read, area, curr_meme, meme_texts)
+        meme_content = list()
+        msg = bot.send_message(call.message.chat.id, 'Enter the content for the area 1:', reply_markup=markup)
+        bot.register_next_step_handler(msg, content_injection, num_of_fields_to_read, area, curr_meme, meme_content)
 
 
 @bot.message_handler(func=lambda m: True, content_types=['text'])
@@ -207,75 +208,94 @@ def respond_to_message(message):
     bot.send_message(message.chat.id, 'I don\'t understand you...Is this loss??')
 
 
-def read_text(message, num_of_fields_to_read, area, curr_meme, meme_texts):
+def content_injection(message, num_of_fields_to_read, area, curr_meme, meme_content):
     num_of_fields_to_read -= 1
     area += 1
     markup = types.ForceReply()
     if message.text == '-':
-        meme_texts.append('')
+        meme_content.append('')
     elif message.text == '/cancel':
         bot.send_message(message.chat.id, 'Current action was cancelled.')
         num_of_fields_to_read = -1
+    elif message.photo is not None:
+        file_id = message.photo[-1].file_id
+        file = bot.get_file(file_id)
+        meme_content.append(file.file_path)
     else:
-        meme_texts.append(message.text)
+        meme_content.append(message.text)
     if num_of_fields_to_read > 0:
-        msg = bot.send_message(message.chat.id, 'Enter the text for the area ' + str(area) + ':', reply_markup=markup)
-        bot.register_next_step_handler(msg, read_text, num_of_fields_to_read, area, curr_meme, meme_texts)
+        msg = bot.send_message(message.chat.id, 'Enter the content for the area ' + str(area) + ':',
+                               reply_markup=markup)
+        bot.register_next_step_handler(msg, content_injection, num_of_fields_to_read, area, curr_meme, meme_content)
     elif num_of_fields_to_read == 0:
         bot.send_message(message.chat.id, 'Your meme')
-        create_meme(message, curr_meme, meme_texts)
+        create_meme(message, curr_meme, meme_content)
     else:
         pass
 
 
-def create_meme(message, curr_meme, meme_texts):
+def create_meme(message, curr_meme, meme_content):
     j = 0
     font_size = 40
+    add_text = True
     meme = Image.open('MemeTemplates/' + curr_meme + '.png')
     font_type = ImageFont.truetype(Memes[curr_meme].font_name, font_size)
     for WH, position in Memes[curr_meme].areas.items():
         width, height = WH[0], WH[1]
         im = Image.new("RGBA", (width, height), (255, 255, 255, 0))
         draw = ImageDraw.Draw(im)
-        text = meme_texts[j]
-        modifiedtext = ''
-        words = text.split()
-        currstr = ''
-        if draw.textsize(text, font=font_type)[0] < width:
-            modifiedtext = text
-        else:
-            for i in words:
-                if draw.textsize(currstr, font=font_type)[0] + draw.textsize(i, font=font_type)[0] < width:
-                    currstr += i + ' '
-                else:
-                    modifiedtext += currstr + '\n'
-                    currstr = i + ' '
-                if words.index(i) == len(words) - 1:
-                    modifiedtext += currstr
-                while draw.textsize(modifiedtext, font=font_type)[1] > height or \
-                        draw.textsize(modifiedtext, font=font_type)[0] > width:
-                    font_size -= 1
-                    font_type = ImageFont.truetype('impact.ttf', font_size)
-        datas = im.getdata()
-        new_data = []
-        for item in datas:
-            if item[0] == 255 and item[1] == 255 and item[2] == 255:
-                new_data.append((255, 255, 255, 0))
+        text = meme_content[j]
+        if 'photos/' in text and '.jpg' in text:
+            try:
+                response = requests.get(
+                    'https://api.telegram.org/file/bot' + token + '/' + text)
+                user_img = Image.open(BytesIO(response.content))
+                user_img.thumbnail((width, height), Image.ANTIALIAS)
+                im.paste(user_img, ((im.size[0] - user_img.size[0]) // 2, (im.size[1] - user_img.size[1]) // 2))
+                add_text = False
+                del user_img
+            except:
+                add_text = True
+        elif add_text:
+            modifiedtext = ''
+            words = text.split()
+            currstr = ''
+            if draw.textsize(text, font=font_type)[0] < width:
+                modifiedtext = text
             else:
-                new_data.append(item)
-        im.putdata(new_data)
-        W, H = draw.textsize(modifiedtext, font=font_type)
-        if Memes[curr_meme].font_colour == (255, 255, 255):
-            draw.text(((width - W) / 2 - 1, (height - H) / 2 - 1), modifiedtext, font=font_type, fill=(0, 0, 0),
+                for i in words:
+                    if draw.textsize(currstr, font=font_type)[0] + draw.textsize(i, font=font_type)[0] < width:
+                        currstr += i + ' '
+                    else:
+                        modifiedtext += currstr + '\n'
+                        currstr = i + ' '
+                    if words.index(i) == len(words) - 1:
+                        modifiedtext += currstr
+                    while draw.textsize(modifiedtext, font=font_type)[1] > height or \
+                            draw.textsize(modifiedtext, font=font_type)[0] > width:
+                        font_size -= 1
+                        font_type = ImageFont.truetype('impact.ttf', font_size)
+            datas = im.getdata()
+            new_data = []
+            for item in datas:
+                if item[0] == 255 and item[1] == 255 and item[2] == 255:
+                    new_data.append((255, 255, 255, 0))
+                else:
+                    new_data.append(item)
+            im.putdata(new_data)
+            W, H = draw.textsize(modifiedtext, font=font_type)
+            if Memes[curr_meme].font_colour == (255, 255, 255):
+                draw.text(((width - W) / 2 - 1, (height - H) / 2 - 1), modifiedtext, font=font_type, fill=(0, 0, 0),
+                          spacing=3, align='center')
+                draw.text(((width - W) / 2 + 1, (height - H) / 2 - 1), modifiedtext, font=font_type, fill=(0, 0, 0),
+                          spacing=3, align='center')
+                draw.text(((width - W) / 2 - 1, (height - H) / 2 + 1), modifiedtext, font=font_type, fill=(0, 0, 0),
+                          spacing=3, align='center')
+                draw.text(((width - W) / 2 + 1, (height - H) / 2 + 1), modifiedtext, font=font_type, fill=(0, 0, 0),
+                          spacing=3, align='center')
+            draw.text(((width - W) / 2, (height - H) / 2), modifiedtext, fill=Memes[curr_meme].font_colour,
+                      font=font_type,
                       spacing=3, align='center')
-            draw.text(((width - W) / 2 + 1, (height - H) / 2 - 1), modifiedtext, font=font_type, fill=(0, 0, 0),
-                      spacing=3, align='center')
-            draw.text(((width - W) / 2 - 1, (height - H) / 2 + 1), modifiedtext, font=font_type, fill=(0, 0, 0),
-                      spacing=3, align='center')
-            draw.text(((width - W) / 2 + 1, (height - H) / 2 + 1), modifiedtext, font=font_type, fill=(0, 0, 0),
-                      spacing=3, align='center')
-        draw.text(((width - W) / 2, (height - H) / 2), modifiedtext, fill=Memes[curr_meme].font_colour, font=font_type,
-                  spacing=3, align='center')
         meme.paste(im, position, im)
         del im
         j += 1
