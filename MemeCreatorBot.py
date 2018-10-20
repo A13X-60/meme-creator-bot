@@ -12,11 +12,6 @@ from PIL import Image, ImageDraw, ImageFont
 token = os.environ['TELEGRAM_TOKEN']
 r = redis.from_url(os.environ.get("REDIS_URL"))
 
-#       Your bot code below
-# bot = telebot.TeleBot(token)
-# some_api = some_api_lib.connect(some_api_token)
-#              ...
-
 bot = telebot.TeleBot(token)
 print('Starting bot:', bot.get_me())
 
@@ -78,6 +73,7 @@ zac_efron_shrugs = Meme({(718, 91): (0, 0), (351, 216): (20, 385)}, 'impact.ttf'
 heart_attack = Meme({(298, 174): (0, 0), (296, 178): (2, 179), (295, 186): (1, 363)}, 'impact.ttf', (0, 0, 0))
 tom_and_boys = Meme({(252, 105): (50, 115), (243, 115): (256, 223), (252, 127): (403, 109)}, 'impact.ttf', (255, 255, 255))
 persian_cat = Meme({(692, 256): (14, 11)}, 'helveticaneue.ttf', (0, 0, 0))
+tom_shoots_himself = Meme({(313, 132): (253, 271), (317, 133): (11, 427), (316, 122): (0, 140)}, 'impact.ttf', (255, 255, 255))
 Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': expanding_brain,
          'who would win': who_would_win, 'the rock driving': the_rock_driving, 'sleeping shaq': sleeping_shaq,
          'nut button': nut_button, 'batman slapping robin': batman_slapping_robin, 'is this a pigeon': is_this_a_pigeon,
@@ -90,7 +86,8 @@ Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': 
          'trojan horse': trojan_horse, 'homer\'s fat': homers_fat, 'you can\'t defeat me': you_cant_defeat_me,
          'beefy tom': beefy_tom, 'disappointed black guy': disappointed_black_guy, 'handshake': handshake,
          'spiderman stops bus': spiderman_stops_bus, 'man throwing card': man_throwing_card, 'zac efron shrugs': zac_efron_shrugs,
-         'heart attack': heart_attack, 'tom and boys': tom_and_boys, 'persian cat': persian_cat}
+         'heart attack': heart_attack, 'tom and boys': tom_and_boys, 'persian cat': persian_cat, 
+		 'tom shoots himself': tom_shoots_himself}
 
 # Menu reply markup
 menu = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
@@ -331,5 +328,5 @@ try:
 except Exception as err:
     time.sleep(5)
     if str(err) != "HTTPSConnectionPool(host='api.telegram.org', port=443): Read timed out. (read timeout=30)":
-        bot.send_message(426440597, 'Error occurred: ' + str(err))
+        bot.send_message(int('CHAT_ID', 10), 'Error occurred: ' + str(err))
     print('Error occurred:', err)
