@@ -274,23 +274,23 @@ def create_meme(message, curr_meme, meme_content):
                 add_text = True
         elif add_text:
             modifiedtext = ''
-            words = text.split()
             currstr = ''
             if draw.textsize(text, font=font_type)[0] < width:
                 modifiedtext = text
             else:
-                for i in words:
-                    if draw.textsize(currstr, font=font_type)[0] + draw.textsize(i, font=font_type)[0] < width:
-                        currstr += i + ' '
+                words = text.split()
+                for i in range(len(words)):
+                    if draw.textsize(currstr, font=font_type)[0] + draw.textsize(words[i], font=font_type)[0] < width:
+                        currstr += words[i] + ' '
                     else:
                         modifiedtext += currstr + '\n'
-                        currstr = i + ' '
-                    if words.index(i) == len(words) - 1:
+                        currstr = words[i] + ' '
+                    if i == len(words) - 1:
                         modifiedtext += currstr
-                    while draw.textsize(modifiedtext, font=font_type)[1] > height or \
-                            draw.textsize(modifiedtext, font=font_type)[0] > width:
-                        font_size -= 1
-                        font_type = ImageFont.truetype('impact.ttf', font_size)
+                while draw.textsize(modifiedtext, font=font_type)[1] > height or \
+                        draw.textsize(modifiedtext, font=font_type)[0] > width:
+                    font_size -= 1
+                    font_type = ImageFont.truetype(Memes[curr_meme].font_name, font_size)
             datas = im.getdata()
             new_data = []
             for item in datas:
@@ -310,8 +310,7 @@ def create_meme(message, curr_meme, meme_content):
                 draw.text(((width - W) / 2 + 1, (height - H) / 2 + 1), modifiedtext, font=font_type, fill=(0, 0, 0),
                           spacing=3, align='center')
             draw.text(((width - W) / 2, (height - H) / 2), modifiedtext, fill=Memes[curr_meme].font_colour,
-                      font=font_type,
-                      spacing=3, align='center')
+                      font=font_type, spacing=3, align='center')
         meme.paste(im, position, im)
         del im
         j += 1
