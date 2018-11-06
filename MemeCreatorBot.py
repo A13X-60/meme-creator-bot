@@ -96,7 +96,7 @@ Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': 
          'spiderman stops bus': spiderman_stops_bus, 'man throwing card': man_throwing_card,
          'zac efron shrugs': zac_efron_shrugs,
          'heart attack': heart_attack, 'tom and boys': tom_and_boys, 'persian cat': persian_cat,
-         'tom shoots himself': tom_shoots_himself, 'googbye high school': goodbye_high_school,
+         'tom shoots himself': tom_shoots_himself, 'goodbye high school': goodbye_high_school,
          'kissing pair': kissing_pair}
 
 # Menu reply markup
