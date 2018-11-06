@@ -67,13 +67,21 @@ you_cant_defeat_me = Meme({(262, 123): (221, 136), (243, 119): (431, 439), (357,
 beefy_tom = Meme({(412, 203): (288, 122), (307, 103): (13, 312)}, 'impact.ttf', (0, 0, 0))
 disappointed_black_guy = Meme({(340, 298): (0, 0), (338, 298): (1, 305)}, 'impact.ttf', (0, 0, 0))
 handshake = Meme({(333, 253): (7, 286), (375, 265): (525, 229), (337, 223): (179, 0)}, 'impact.ttf', (255, 255, 255))
-spiderman_stops_bus = Meme({(361, 190): (0, 0), (456, 241): (116, 189), (410, 235): (340, 522)}, 'impact.ttf', (255, 255, 255))
-man_throwing_card = Meme({(382, 184): (206, 0), (409, 331): (285, 254), (444, 259): (22, 642)}, 'impact.ttf', (255, 255, 255))
+spiderman_stops_bus = Meme({(361, 190): (0, 0), (456, 241): (116, 189), (410, 235): (340, 522)}, 'impact.ttf',
+                           (255, 255, 255))
+man_throwing_card = Meme({(382, 184): (206, 0), (409, 331): (285, 254), (444, 259): (22, 642)}, 'impact.ttf',
+                         (255, 255, 255))
 zac_efron_shrugs = Meme({(718, 91): (0, 0), (351, 216): (20, 385)}, 'impact.ttf', (0, 0, 0))
 heart_attack = Meme({(298, 174): (0, 0), (296, 178): (2, 179), (295, 186): (1, 363)}, 'impact.ttf', (0, 0, 0))
-tom_and_boys = Meme({(252, 105): (50, 115), (243, 115): (256, 223), (252, 127): (403, 109)}, 'impact.ttf', (255, 255, 255))
+tom_and_boys = Meme({(252, 105): (50, 115), (243, 115): (256, 223), (252, 127): (403, 109)}, 'impact.ttf',
+                    (255, 255, 255))
 persian_cat = Meme({(692, 256): (14, 11)}, 'helveticaneue.ttf', (0, 0, 0))
-tom_shoots_himself = Meme({(313, 132): (253, 271), (317, 133): (11, 427), (316, 122): (0, 140)}, 'impact.ttf', (255, 255, 255))
+tom_shoots_himself = Meme({(313, 132): (253, 271), (317, 133): (11, 427), (316, 122): (0, 140)}, 'impact.ttf',
+                          (255, 255, 255))
+goodbye_high_school = Meme(
+    {(377, 117): (17, 16), (213, 127): (207, 263), (228, 102): (0, 349), (265, 105): (416, 8), (223, 176): (144, 576),
+     (335, 133): (483, 603)}, 'impact.ttf', (255, 255, 255))
+kissing_pair = Meme({(253, 96): (11, 29), (217, 82): (316, 49), (264, 91): (14, 316)}, 'impact.ttf', (0, 0, 0))
 Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': expanding_brain,
          'who would win': who_would_win, 'the rock driving': the_rock_driving, 'sleeping shaq': sleeping_shaq,
          'nut button': nut_button, 'batman slapping robin': batman_slapping_robin, 'is this a pigeon': is_this_a_pigeon,
@@ -85,9 +93,11 @@ Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': 
          'battle with giant': battle_with_giant, 'this is brilliant but i like this': this_is_brilliant_but_i_like_this,
          'trojan horse': trojan_horse, 'homer\'s fat': homers_fat, 'you can\'t defeat me': you_cant_defeat_me,
          'beefy tom': beefy_tom, 'disappointed black guy': disappointed_black_guy, 'handshake': handshake,
-         'spiderman stops bus': spiderman_stops_bus, 'man throwing card': man_throwing_card, 'zac efron shrugs': zac_efron_shrugs,
-         'heart attack': heart_attack, 'tom and boys': tom_and_boys, 'persian cat': persian_cat, 
-		 'tom shoots himself': tom_shoots_himself}
+         'spiderman stops bus': spiderman_stops_bus, 'man throwing card': man_throwing_card,
+         'zac efron shrugs': zac_efron_shrugs,
+         'heart attack': heart_attack, 'tom and boys': tom_and_boys, 'persian cat': persian_cat,
+         'tom shoots himself': tom_shoots_himself, 'googbye high school': goodbye_high_school,
+         'kissing pair': kissing_pair}
 
 # Menu reply markup
 menu = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
