@@ -82,7 +82,7 @@ goodbye_high_school = Meme(
     {(377, 117): (17, 16), (213, 127): (207, 263), (228, 102): (0, 349), (265, 105): (416, 8), (223, 176): (144, 576),
      (335, 133): (483, 603)}, 'impact.ttf', (0, 0, 0))
 kissing_pair = Meme({(253, 96): (11, 29), (217, 82): (316, 49), (264, 91): (14, 316)}, 'impact.ttf', (0, 0, 0))
-useless_gun = Meme({(276, 143): (339, 9), (286, 209): (21, 16), (411, 239): (47, 555)}, 'impact.ttf', (255, 255, 255))
+useless_gun = Meme({(255, 103): (351, 3), (286, 209): (21, 16), (411, 239): (47, 555)}, 'impact.ttf', (255, 255, 255))
 Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': expanding_brain,
          'who would win': who_would_win, 'the rock driving': the_rock_driving, 'sleeping shaq': sleeping_shaq,
          'nut button': nut_button, 'batman slapping robin': batman_slapping_robin, 'is this a pigeon': is_this_a_pigeon,
