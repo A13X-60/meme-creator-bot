@@ -5,6 +5,7 @@ import telebot
 import time
 import math
 import requests
+from Memebase import Memes
 from telebot import types
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
@@ -14,91 +15,6 @@ r = redis.from_url(os.environ.get("REDIS_URL"))
 
 bot = telebot.TeleBot(token)
 print('Starting bot:', bot.get_me())
-
-
-# 'Areas' variable is a dict structured like this:
-#                   {(width_of_the_area, height_of_the_area): (x_of_the_left_top_corner, y_of_the_left_top_corner), ...}
-class Meme:
-    def __init__(self, areas, font_name, font_colour):
-        self.areas = areas
-        self.font_name = font_name
-        self.font_colour = font_colour
-        self.text_fields_file_id = None
-
-
-drake = Meme({(319, 256): (322, 0), (319, 289): (322, 261)}, 'impact.ttf', (0, 0, 0))
-scroll_of_truth = Meme({(96, 119): (95, 288)}, 'impact.ttf', (0, 0, 0))
-expanding_brain = Meme({(422, 296): (0, 0), (420, 301): (2, 303), (417, 269): (2, 611), (419, 304): (2, 895)},
-                       'impact.ttf', (0, 0, 0))
-who_would_win = Meme({(404, 398): (5, 97), (371, 396): (424, 97)}, 'impact.ttf', (0, 0, 0))
-the_rock_driving = Meme({(241, 116): (316, 31), (229, 106): (330, 263)}, 'impact.ttf', (0, 0, 0))
-sleeping_shaq = Meme({(309, 335): (2, 2), (304, 285): (2, 342)}, 'impact.ttf', (0, 0, 0))
-nut_button = Meme({(308, 222): (12, 179), (315, 318): (270, 41)}, 'impact.ttf', (255, 255, 255))
-batman_slapping_robin = Meme({(167, 75): (21, 3), (169, 82): (223, 2)}, 'impact.ttf', (0, 0, 0))
-is_this_a_pigeon = Meme({(326, 110): (28, 65), (217, 84): (416, 91), (568, 90): (33, 478)}, 'impact.ttf',
-                        (255, 255, 255))
-distracted_boyfriend = Meme({(161, 88): (97, 271), (150, 62): (309, 163), (151, 75): (449, 222)}, 'impact.ttf',
-                            (255, 255, 255))
-croatia_bosnia_border = Meme({(418, 157): (305, 128), (449, 137): (360, 370), (528, 130): (40, 623)}, 'impact.ttf',
-                             (0, 0, 0))
-left_exit_12_off_ramp = Meme({(262, 181): (101, 88), (276, 182): (369, 88), (427, 143): (195, 501)}, 'impact.ttf',
-                             (255, 255, 255))
-hard_to_swallow_pills = Meme({(278, 216): (135, 558)}, 'impact.ttf', (0, 0, 0))
-trump_presenting = Meme({(289, 96): (2, 251), (308, 100): (133, 146), (409, 199): (383, 274)}, 'impact.ttf',
-                        (255, 255, 255))
-double_d_facts_book = Meme({(264, 130): (20, 494)}, 'impact.ttf', (0, 0, 0))
-water_gun = Meme({(383, 112): (106, 343), (295, 214): (500, 369)}, 'impact.ttf', (255, 255, 255))
-man_bear_fish = Meme({(561, 116): (103, 388), (333, 114): (219, 219), (232, 253): (560, 172)}, 'impact.ttf',
-                     (255, 255, 255))
-upvotes = Meme({(177, 45): (8, 392)}, 'impact.ttf', (0, 0, 0))
-who_killed_hannibal = Meme({(319, 275): (513, 178), (307, 234): (83, 229), (930, 118): (15, 958)}, 'impact.ttf',
-                           (255, 255, 255))
-american_chopper_argument = Meme(
-    {(232, 88): (12, 185), (311, 108): (185, 477), (282, 90): (1, 790), (228, 118): (1, 1066), (281, 98): (219, 1374)},
-    'impact.ttf', (0, 0, 0))
-battle_with_giant = Meme({(260, 224): (228, 96), (242, 153): (67, 506)}, 'impact.ttf', (255, 255, 255))
-this_is_brilliant_but_i_like_this = Meme({(270, 166): (319, 127), (244, 172): (32, 460)}, 'impact.ttf', (255, 255, 255))
-trojan_horse = Meme({(349, 131): (43, 207), (378, 147): (26, 346), (343, 135): (368, 41), (311, 155): (363, 527)},
-                    'impact.ttf', (255, 255, 255))
-homers_fat = Meme({(222, 99): (426, 157), (284, 199): (130, 128), (319, 236): (124, 594)}, 'impact.ttf',
-                  (255, 255, 255))
-you_cant_defeat_me = Meme({(262, 123): (221, 136), (243, 119): (431, 439), (357, 225): (195, 629)}, 'impact.ttf',
-                          (255, 255, 255))
-beefy_tom = Meme({(412, 203): (288, 122), (307, 103): (13, 312)}, 'impact.ttf', (0, 0, 0))
-disappointed_black_guy = Meme({(340, 298): (0, 0), (338, 298): (1, 305)}, 'impact.ttf', (0, 0, 0))
-handshake = Meme({(333, 253): (7, 286), (375, 265): (525, 229), (337, 223): (179, 0)}, 'impact.ttf', (255, 255, 255))
-spiderman_stops_bus = Meme({(361, 190): (0, 0), (456, 241): (116, 189), (410, 235): (340, 522)}, 'impact.ttf',
-                           (255, 255, 255))
-man_throwing_card = Meme({(382, 184): (206, 0), (409, 331): (285, 254), (444, 259): (22, 642)}, 'impact.ttf',
-                         (255, 255, 255))
-zac_efron_shrugs = Meme({(718, 91): (0, 0), (351, 216): (20, 385)}, 'impact.ttf', (0, 0, 0))
-heart_attack = Meme({(298, 174): (0, 0), (296, 178): (2, 179), (295, 186): (1, 363)}, 'impact.ttf', (0, 0, 0))
-tom_and_boys = Meme({(252, 105): (50, 115), (243, 115): (256, 223), (252, 127): (403, 109)}, 'impact.ttf',
-                    (255, 255, 255))
-persian_cat = Meme({(692, 256): (14, 11)}, 'helveticaneue.ttf', (0, 0, 0))
-tom_shoots_himself = Meme({(313, 132): (253, 271), (317, 133): (11, 427), (316, 122): (0, 140)}, 'impact.ttf',
-                          (255, 255, 255))
-goodbye_high_school = Meme(
-    {(377, 117): (17, 16), (213, 127): (207, 263), (228, 102): (0, 349), (265, 105): (416, 8), (223, 176): (144, 576),
-     (335, 133): (483, 603)}, 'impact.ttf', (0, 0, 0))
-kissing_pair = Meme({(253, 96): (11, 29), (217, 82): (316, 49), (264, 91): (14, 316)}, 'impact.ttf', (0, 0, 0))
-useless_gun = Meme({(255, 103): (351, 3), (286, 209): (21, 16), (411, 239): (47, 555)}, 'impact.ttf', (255, 255, 255))
-Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': expanding_brain,
-         'who would win': who_would_win, 'the rock driving': the_rock_driving, 'sleeping shaq': sleeping_shaq,
-         'nut button': nut_button, 'batman slapping robin': batman_slapping_robin, 'is this a pigeon': is_this_a_pigeon,
-         'distracted boyfriend': distracted_boyfriend, 'croatia bosnia border': croatia_bosnia_border,
-         'left exit 12 off ramp': left_exit_12_off_ramp, 'hard to swallow pills': hard_to_swallow_pills,
-         'trump presenting': trump_presenting, 'double d facts book': double_d_facts_book, 'water gun': water_gun,
-         'man bear fish': man_bear_fish, 'upvotes': upvotes, 'who killed hannibal': who_killed_hannibal,
-         'american chopper argument': american_chopper_argument,
-         'battle with giant': battle_with_giant, 'this is brilliant but i like this': this_is_brilliant_but_i_like_this,
-         'trojan horse': trojan_horse, 'homer\'s fat': homers_fat, 'you can\'t defeat me': you_cant_defeat_me,
-         'beefy tom': beefy_tom, 'disappointed black guy': disappointed_black_guy, 'handshake': handshake,
-         'spiderman stops bus': spiderman_stops_bus, 'man throwing card': man_throwing_card,
-         'zac efron shrugs': zac_efron_shrugs,
-         'heart attack': heart_attack, 'tom and boys': tom_and_boys, 'persian cat': persian_cat,
-         'tom shoots himself': tom_shoots_himself, 'goodbye high school': goodbye_high_school,
-         'kissing pair': kissing_pair, 'useless gun': useless_gun}
 
 # Menu reply markup
 menu = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
@@ -111,7 +27,7 @@ menu.add(btn1, btn2, btn3, btn4)
 
 # A function which creates a list of the available memes on the bot's start up
 def create_pic_available_memes():
-    memes_per_row = 5
+    memes_per_row = 7
     font_size = 40
     txt = Image.new("RGBA", (281, 42), (255, 255, 255, 0))
     draw = ImageDraw.Draw(txt)
@@ -207,23 +123,25 @@ def donation_info(message):
 @bot.callback_query_handler(func=lambda call: True)
 def button_callback(call):
     if call.data in Memes.keys():
+        sent_messages = list()
         bot.answer_callback_query(call.id)
         bot.delete_message(call.message.chat.id, call.message.message_id)
         curr_meme = call.data
-        bot.send_message(call.message.chat.id,
-                         'Fill the following content areas. Send me a photo or a text.\n\n(type \"-\" to leave the area blank)')
+        sent_messages.append(bot.send_message(call.message.chat.id,
+                         'Fill the following content areas. Send me a photo or a text.\n\n(type \"-\" to leave the area blank)').message_id)
         if Memes[curr_meme].text_fields_file_id is None:
-            Memes[curr_meme].text_fields_file_id = \
-                bot.send_photo(call.message.chat.id, open('MemeTextFields/' + curr_meme + '.png', 'rb')).photo[
-                    0].file_id
+            photo_message = bot.send_photo(call.message.chat.id, open('MemeTextFields/' + curr_meme + '.png', 'rb'))
+            Memes[curr_meme].text_fields_file_id = photo_message.photo[0].file_id
+            sent_messages.append(photo_message.message_id)
         else:
-            bot.send_photo(call.message.chat.id, Memes[curr_meme].text_fields_file_id)
+            sent_messages.append(bot.send_photo(call.message.chat.id, Memes[curr_meme].text_fields_file_id).message_id)
         area = 1
         num_of_fields_to_read = len(Memes[curr_meme].areas.keys())
         markup = types.ForceReply()
         meme_content = list()
         msg = bot.send_message(call.message.chat.id, 'Enter the content for the area 1:', reply_markup=markup)
-        bot.register_next_step_handler(msg, content_injection, num_of_fields_to_read, area, curr_meme, meme_content)
+        sent_messages.append(msg.message_id)
+        bot.register_next_step_handler(msg, content_injection, num_of_fields_to_read, area, curr_meme, meme_content, sent_messages)
 
 
 @bot.message_handler(func=lambda m: True, content_types=['text'])
@@ -231,7 +149,7 @@ def respond_to_message(message):
     bot.send_message(message.chat.id, 'I don\'t understand you...Is this loss??')
 
 
-def content_injection(message, num_of_fields_to_read, area, curr_meme, meme_content):
+def content_injection(message, num_of_fields_to_read, area, curr_meme, meme_content, sent_messages):
     num_of_fields_to_read -= 1
     area += 1
     markup = types.ForceReply()
@@ -240,6 +158,8 @@ def content_injection(message, num_of_fields_to_read, area, curr_meme, meme_cont
     elif message.text == '/cancel':
         bot.send_message(message.chat.id, 'Current action was cancelled.', reply_markup=menu)
         num_of_fields_to_read = -1
+        delete_messages(message.chat.id, sent_messages)
+        del meme_content
     elif message.content_type == 'photo':
         file_id = message.photo[-1].file_id
         file = bot.get_file(file_id)
@@ -247,16 +167,18 @@ def content_injection(message, num_of_fields_to_read, area, curr_meme, meme_cont
     elif message.content_type == 'text':
         meme_content.append(message.text)
     else:
-        bot.send_message(message.chat.id, 'Please, try to send me some text or a picture.')
+        sent_messages.append(bot.send_message(message.chat.id, 'Please, try to send me some text or a picture.').message_id)
         num_of_fields_to_read += 1
         area -= 1
     if num_of_fields_to_read > 0:
         msg = bot.send_message(message.chat.id, 'Enter the content for the area ' + str(area) + ':',
                                reply_markup=markup)
-        bot.register_next_step_handler(msg, content_injection, num_of_fields_to_read, area, curr_meme, meme_content)
+        sent_messages.append(msg.message_id)
+        bot.register_next_step_handler(msg, content_injection, num_of_fields_to_read, area, curr_meme, meme_content, sent_messages)
     elif num_of_fields_to_read == 0:
         bot.send_message(message.chat.id, 'Your meme', reply_markup=menu)
         create_meme(message, curr_meme, meme_content)
+        del sent_messages
     else:
         pass
 
@@ -331,6 +253,12 @@ def create_meme(message, curr_meme, meme_content):
     bio.seek(0)
     bot.send_photo(message.chat.id, bio)
     del meme
+
+
+def delete_messages(chat_id, sent_messages):
+    for message in sent_messages:
+        bot.delete_message(chat_id, message)
+    del sent_messages
 
 
 try:
