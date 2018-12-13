@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import redis
+#import redis
 import os
 import telebot
 import time
@@ -10,8 +10,9 @@ from telebot import types
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 
-token = os.environ['TELEGRAM_TOKEN']
-r = redis.from_url(os.environ.get("REDIS_URL"))
+#token = os.environ['TELEGRAM_TOKEN']
+#r = redis.from_url(os.environ.get("REDIS_URL"))
+token = '617312566:AAEvNLoOwmngACDkGcJfDkqiUhhV9i28yS8'
 
 bot = telebot.TeleBot(token)
 print('Starting bot:', bot.get_me())
@@ -89,13 +90,44 @@ def cancel(message):
 @bot.message_handler(commands=['creatememe'])
 @bot.message_handler(func=lambda m: m.text == '😂Create meme😂')
 def choose_meme(message):
-    markup = types.InlineKeyboardMarkup()
-    button_list = list()
-    for i in Memes.keys():
-        btn = types.InlineKeyboardButton(text=i.upper(), callback_data=i)
-        button_list.append(btn)
-    markup.add(*[i for i in button_list])
+    page = 0
+    markup = generate_inline_layout(page)
     bot.send_message(message.chat.id, 'Select the meme from database', reply_markup=markup)
+
+
+@bot.callback_query_handler(func=lambda call: 'L3FT' in str(call.data))
+def choose_meme_left(call):
+    markup = generate_inline_layout(int(str(call.data)[4]) - 1)
+    bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=markup)
+
+
+@bot.callback_query_handler(func=lambda call: 'R1GHT' in str(call.data))
+def choose_meme_right(call):
+    markup = generate_inline_layout(int(str(call.data)[5]) + 1)
+    bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=markup)
+
+
+def generate_inline_layout(page):
+    memes_per_page = 8
+    page_markup = types.InlineKeyboardMarkup(row_width=2)
+    button_list = list()
+    nav_btns = list()
+    if page*memes_per_page + memes_per_page > len(Memes):
+        end_index = len(Memes)
+    else:
+        end_index = page*memes_per_page + memes_per_page
+    for i in range(page*memes_per_page, end_index):
+        btn = types.InlineKeyboardButton(text=list(Memes)[i].upper(), callback_data=list(Memes)[i])
+        button_list.append(btn)
+    page_markup.add(*[i for i in button_list])
+    if page > 0:
+        button_left = types.InlineKeyboardButton(text="⬅ Page " + str(page), callback_data='L3FT' + str(page))
+        nav_btns.append(button_left)
+    if page < len(Memes) // memes_per_page:
+        button_right = types.InlineKeyboardButton(text="Page " + str(page + 2) + ' ➡', callback_data='R1GHT' + str(page))
+        nav_btns.append(button_right)
+    page_markup.add(*[i for i in nav_btns])
+    return page_markup
 
 
 @bot.message_handler(func=lambda m: m.text == '😎List of available memes😎')
@@ -120,28 +152,27 @@ def donation_info(message):
                      text='If you want to thank me for the experience you had with this bot you can donate me via:\n\nBitcoin:\n*1HvF4uSHNz9z1zafqSr2N8rxXyHcqAGrmY*\n\nEthereum:\n*0x5714Dde9B12Bf629F185CeE90f263C05816B1616*')
 
 
-@bot.callback_query_handler(func=lambda call: True)
+@bot.callback_query_handler(func=lambda call: call.data in Memes.keys())
 def button_callback(call):
-    if call.data in Memes.keys():
-        sent_messages = list()
-        bot.answer_callback_query(call.id)
-        bot.delete_message(call.message.chat.id, call.message.message_id)
-        curr_meme = call.data
-        sent_messages.append(bot.send_message(call.message.chat.id,
-                         'Fill the following content areas. Send me a photo or a text.\n\n(type \"-\" to leave the area blank)').message_id)
-        if Memes[curr_meme].text_fields_file_id is None:
-            photo_message = bot.send_photo(call.message.chat.id, open('MemeTextFields/' + curr_meme + '.png', 'rb'))
-            Memes[curr_meme].text_fields_file_id = photo_message.photo[0].file_id
-            sent_messages.append(photo_message.message_id)
-        else:
-            sent_messages.append(bot.send_photo(call.message.chat.id, Memes[curr_meme].text_fields_file_id).message_id)
-        area = 1
-        num_of_fields_to_read = len(Memes[curr_meme].areas.keys())
-        markup = types.ForceReply()
-        meme_content = list()
-        msg = bot.send_message(call.message.chat.id, 'Enter the content for the area 1:', reply_markup=markup)
-        sent_messages.append(msg.message_id)
-        bot.register_next_step_handler(msg, content_injection, num_of_fields_to_read, area, curr_meme, meme_content, sent_messages)
+    sent_messages = list()
+    bot.answer_callback_query(call.id)
+    bot.delete_message(call.message.chat.id, call.message.message_id)
+    curr_meme = call.data
+    sent_messages.append(bot.send_message(call.message.chat.id,
+                     'Fill the following content areas. Send me a photo or a text.\n\n(type \"-\" to leave the area blank)').message_id)
+    if Memes[curr_meme].text_fields_file_id is None:
+        photo_message = bot.send_photo(call.message.chat.id, open('MemeTextFields/' + curr_meme + '.png', 'rb'))
+        Memes[curr_meme].text_fields_file_id = photo_message.photo[0].file_id
+        sent_messages.append(photo_message.message_id)
+    else:
+        sent_messages.append(bot.send_photo(call.message.chat.id, Memes[curr_meme].text_fields_file_id).message_id)
+    area = 1
+    num_of_fields_to_read = len(Memes[curr_meme].areas.keys())
+    markup = types.ForceReply()
+    meme_content = list()
+    msg = bot.send_message(call.message.chat.id, 'Enter the content for the area 1:', reply_markup=markup)
+    sent_messages.append(msg.message_id)
+    bot.register_next_step_handler(msg, content_injection, num_of_fields_to_read, area, curr_meme, meme_content, sent_messages)
 
 
 @bot.message_handler(func=lambda m: True, content_types=['text'])
