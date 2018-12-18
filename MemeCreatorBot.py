@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#import redis
+import redis
 import os
 import telebot
 import time
@@ -10,9 +10,8 @@ from telebot import types
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 
-#token = os.environ['TELEGRAM_TOKEN']
-#r = redis.from_url(os.environ.get("REDIS_URL"))
-token = '617312566:AAEvNLoOwmngACDkGcJfDkqiUhhV9i28yS8'
+token = os.environ['TELEGRAM_TOKEN']
+r = redis.from_url(os.environ.get('REDIS_URL'))
 
 bot = telebot.TeleBot(token)
 print('Starting bot:', bot.get_me())
@@ -158,8 +157,8 @@ def button_callback(call):
     bot.answer_callback_query(call.id)
     bot.delete_message(call.message.chat.id, call.message.message_id)
     curr_meme = call.data
-    sent_messages.append(bot.send_message(call.message.chat.id,
-                     'Fill the following content areas. Send me a photo or a text.\n\n(type \"-\" to leave the area blank)').message_id)
+    sent_messages.append(bot.send_message(call.message.chat.id, parse_mode='Markdown',
+                     text='Fill the following content areas. Send me a photo, a text or even a _STICKER_.\n\n(type \"-\" to leave the area blank)').message_id)
     if Memes[curr_meme].text_fields_file_id is None:
         photo_message = bot.send_photo(call.message.chat.id, open('MemeTextFields/' + curr_meme + '.png', 'rb'))
         Memes[curr_meme].text_fields_file_id = photo_message.photo[0].file_id
@@ -195,10 +194,14 @@ def content_injection(message, num_of_fields_to_read, area, curr_meme, meme_cont
         file_id = message.photo[-1].file_id
         file = bot.get_file(file_id)
         meme_content.append(file.file_path)
+    elif message.content_type == 'sticker':
+        sticker = message.sticker.file_id
+        sticker_file = bot.get_file(sticker)
+        meme_content.append(sticker_file.file_path)
     elif message.content_type == 'text':
         meme_content.append(message.text)
     else:
-        sent_messages.append(bot.send_message(message.chat.id, 'Please, try to send me some text or a picture.').message_id)
+        sent_messages.append(bot.send_message(message.chat.id, 'Please, try to send me some text, picture or a sticker').message_id)
         num_of_fields_to_read += 1
         area -= 1
     if num_of_fields_to_read > 0:
@@ -225,7 +228,7 @@ def create_meme(message, curr_meme, meme_content):
         im = Image.new("RGBA", (width, height), (255, 255, 255, 0))
         draw = ImageDraw.Draw(im)
         text = meme_content[j]
-        if 'photos/' in text and '.jpg' in text:
+        if (('photos/' in text or 'stickers/' in text) and '.jpg' in text) or ('stickers/' in text and '.webp'):
             try:
                 response = requests.get(
                     'https://api.telegram.org/file/bot' + token + '/' + text)
@@ -234,7 +237,8 @@ def create_meme(message, curr_meme, meme_content):
                 im.paste(user_img, ((im.size[0] - user_img.size[0]) // 2, (im.size[1] - user_img.size[1]) // 2))
                 add_text = False
                 del user_img
-            except:
+            except Exception as err:
+                print(err)
                 add_text = True
         elif add_text:
             modifiedtext = ''
