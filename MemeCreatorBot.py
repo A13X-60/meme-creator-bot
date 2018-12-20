@@ -305,5 +305,5 @@ try:
 except Exception as err:
     time.sleep(5)
     if str(err) != "HTTPSConnectionPool(host='api.telegram.org', port=443): Read timed out. (read timeout=30)":
-        bot.send_message(int('CHAT_ID', 10), 'Error occurred: ' + str(err))
+        bot.send_message('CHAT_ID', 'Error occurred: ' + str(err))
     print('Error occurred:', err)
