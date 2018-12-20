@@ -94,41 +94,6 @@ def choose_meme(message):
     bot.send_message(message.chat.id, 'Select the meme from database', reply_markup=markup)
 
 
-@bot.callback_query_handler(func=lambda call: 'L3FT' in str(call.data))
-def choose_meme_left(call):
-    markup = generate_inline_layout(int(str(call.data)[4]) - 1)
-    bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=markup)
-
-
-@bot.callback_query_handler(func=lambda call: 'R1GHT' in str(call.data))
-def choose_meme_right(call):
-    markup = generate_inline_layout(int(str(call.data)[5]) + 1)
-    bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=markup)
-
-
-def generate_inline_layout(page):
-    memes_per_page = 8
-    page_markup = types.InlineKeyboardMarkup(row_width=2)
-    button_list = list()
-    nav_btns = list()
-    if page*memes_per_page + memes_per_page > len(Memes):
-        end_index = len(Memes)
-    else:
-        end_index = page*memes_per_page + memes_per_page
-    for i in range(page*memes_per_page, end_index):
-        btn = types.InlineKeyboardButton(text=list(Memes)[i].upper(), callback_data=list(Memes)[i])
-        button_list.append(btn)
-    page_markup.add(*[i for i in button_list])
-    if page > 0:
-        button_left = types.InlineKeyboardButton(text="⬅ Page " + str(page), callback_data='L3FT' + str(page))
-        nav_btns.append(button_left)
-    if page < len(Memes) // memes_per_page:
-        button_right = types.InlineKeyboardButton(text="Page " + str(page + 2) + ' ➡', callback_data='R1GHT' + str(page))
-        nav_btns.append(button_right)
-    page_markup.add(*[i for i in nav_btns])
-    return page_markup
-
-
 @bot.message_handler(func=lambda m: m.text == '😎List of available memes😎')
 @bot.message_handler(commands=['available'])
 def send_available_memes(message):
@@ -149,6 +114,23 @@ def info(message):
 def donation_info(message):
     bot.send_message(message.chat.id, parse_mode='Markdown',
                      text='If you want to thank me for the experience you had with this bot you can donate me via:\n\nBitcoin:\n*1HvF4uSHNz9z1zafqSr2N8rxXyHcqAGrmY*\n\nEthereum:\n*0x5714Dde9B12Bf629F185CeE90f263C05816B1616*')
+
+
+@bot.message_handler(func=lambda m: True, content_types=['text'])
+def respond_to_message(message):
+    bot.send_message(message.chat.id, 'I don\'t understand you...Is this loss??')
+
+
+@bot.callback_query_handler(func=lambda call: 'L3FT' in str(call.data))
+def choose_meme_left(call):
+    markup = generate_inline_layout(int(str(call.data)[4]) - 1)
+    bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=markup)
+
+
+@bot.callback_query_handler(func=lambda call: 'R1GHT' in str(call.data))
+def choose_meme_right(call):
+    markup = generate_inline_layout(int(str(call.data)[5]) + 1)
+    bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=markup)
 
 
 @bot.callback_query_handler(func=lambda call: call.data in Memes.keys())
@@ -174,11 +156,31 @@ def button_callback(call):
     bot.register_next_step_handler(msg, content_injection, num_of_fields_to_read, area, curr_meme, meme_content, sent_messages)
 
 
-@bot.message_handler(func=lambda m: True, content_types=['text'])
-def respond_to_message(message):
-    bot.send_message(message.chat.id, 'I don\'t understand you...Is this loss??')
+# Generation of the inline layout for the particular page for meme selection
+def generate_inline_layout(page):
+    memes_per_page = 8
+    page_markup = types.InlineKeyboardMarkup(row_width=2)
+    button_list = list()
+    nav_btns = list()
+    if page*memes_per_page + memes_per_page > len(Memes):
+        end_index = len(Memes)
+    else:
+        end_index = page*memes_per_page + memes_per_page
+    for i in range(page*memes_per_page, end_index):
+        btn = types.InlineKeyboardButton(text=list(Memes)[i].upper(), callback_data=list(Memes)[i])
+        button_list.append(btn)
+    page_markup.add(*[i for i in button_list])
+    if page > 0:
+        button_left = types.InlineKeyboardButton(text="⬅ Page " + str(page), callback_data='L3FT' + str(page))
+        nav_btns.append(button_left)
+    if page < len(Memes) // memes_per_page:
+        button_right = types.InlineKeyboardButton(text="Page " + str(page + 2) + ' ➡', callback_data='R1GHT' + str(page))
+        nav_btns.append(button_right)
+    page_markup.add(*[i for i in nav_btns])
+    return page_markup
 
 
+# Collecting data for meme contents
 def content_injection(message, num_of_fields_to_read, area, curr_meme, meme_content, sent_messages):
     num_of_fields_to_read -= 1
     area += 1
@@ -217,6 +219,7 @@ def content_injection(message, num_of_fields_to_read, area, curr_meme, meme_cont
         pass
 
 
+# Injecting collected data into the image, adjusting size of the text and pictures for the size of meme content fields
 def create_meme(message, curr_meme, meme_content):
     j = 0
     meme = Image.open('MemeTemplates/' + curr_meme + '.png')
@@ -290,6 +293,7 @@ def create_meme(message, curr_meme, meme_content):
     del meme
 
 
+# Deleting sent messages from chat
 def delete_messages(chat_id, sent_messages):
     for message in sent_messages:
         bot.delete_message(chat_id, message)
