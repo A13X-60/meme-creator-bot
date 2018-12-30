@@ -13,7 +13,6 @@ from PIL import Image, ImageDraw, ImageFont
 
 token = os.environ['TELEGRAM_TOKEN']
 r = redis.from_url(os.environ.get('REDIS_URL'))
-
 analytics_api_key = os.environ['ANALYTICS_API_KEY']
 analytics_incoming_url = 'https://tracker.dashbot.io/track?platform=universal&v=10.1.1-rest&type=incoming&apiKey=' + analytics_api_key
 analytics_outgoing_url = 'https://tracker.dashbot.io/track?platform=universal&v=10.1.1-rest&type=outgoing&apiKey=' + analytics_api_key
@@ -127,7 +126,7 @@ def send_available_memes(message):
 def info(message):
     send_in_analytics({'text': message.text, 'userId': str(message.from_user.id)})
     send_out_analytics({'text': bot.send_message(message.chat.id,
-                                                 'Bot made by @TheSubliminal\nFeel free to send me any suggestions or bug reports.\n\nRate this bot here: https://telegram.me/storebot?start=MemeCreate_bot').text,
+                                                 'Bot made by @TheSubliminal\nFeel free to send me any suggestions or bug reports.').text,
                         'userId': str(message.from_user.id)})
 
 
@@ -312,9 +311,20 @@ def create_meme(message, curr_meme, meme_content):
             if draw.textsize(text, font=font_type)[0] < width:
                 modifiedtext = text
             else:
-                words = text.split()
+                words = list()
+                if (not '\n' in text):
+                    words = text.split()
+                else:
+                    lines = text.splitlines(keepends=True)
+                    for line in lines:
+                        line_words = line.split()
+                        for i in range(len(line_words)):
+                            if i == len(line_words) - 1:
+                                words.append((str(line_words[i]) + '\n'))
+                            else:
+                                words.append((line_words[i]))
                 for i in range(len(words)):
-                    if draw.textsize(currstr, font=font_type)[0] + draw.textsize(words[i], font=font_type)[0] < width:
+                    if draw.textsize(currstr, font=font_type)[0] + draw.textsize(words[i], font=font_type)[0] < width and '\n' not in words[i]:
                         currstr += words[i] + ' '
                     else:
                         modifiedtext += currstr + '\n'
