@@ -67,7 +67,15 @@ goodbye_high_school = Meme(
      (335, 133): (483, 603)}, 'impact.ttf', (0, 0, 0))
 kissing_pair = Meme({(253, 96): (11, 29), (217, 82): (316, 49), (264, 91): (14, 316)}, 'impact.ttf', (0, 0, 0))
 useless_gun = Meme({(265, 80): (347, 3), (286, 209): (21, 16), (411, 239): (47, 555)}, 'impact.ttf', (255, 255, 255))
+connor_pushes_circle = Meme({(607, 67): (69, 16), (607, 67): (69, 86), (607, 67): (69, 156), (607, 67): (69, 226)},
+                            'impact.ttf', (0, 0, 0))
 lisa_simpson_presentation = Meme({(488, 262): (178, 103)}, 'arial.ttf', (0, 0, 0))
+offering_sword = Meme({(426, 254): (121, 28), (497, 148): (256, 299), (458, 290): (437, 352)}, 'impact.ttf',
+                      (255, 255, 255))
+domino_effect = Meme({(392, 108): (141, 435), (315, 171): (0, 83), (314, 125): (316, 239)}, 'impact.ttf',
+                     (255, 255, 255))
+price_charles_steals_wheel = Meme({(398, 225): (0, 128), (326, 236): (150, 393), (408, 279): (368, 234)}, 'impcat.ttf',
+                                  (255, 255, 255))
 Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': expanding_brain,
          'who would win': who_would_win, 'the rock driving': the_rock_driving, 'sleeping shaq': sleeping_shaq,
          'nut button': nut_button, 'batman slapping robin': batman_slapping_robin, 'is this a pigeon': is_this_a_pigeon,
@@ -83,5 +91,6 @@ Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': 
          'zac efron shrugs': zac_efron_shrugs,
          'heart attack': heart_attack, 'tom and boys': tom_and_boys, 'persian cat': persian_cat,
          'tom shoots himself': tom_shoots_himself, 'goodbye high school': goodbye_high_school,
-         'kissing pair': kissing_pair, 'useless gun': useless_gun,
-         'lisa simpson presentation': lisa_simpson_presentation}
+         'kissing pair': kissing_pair, 'useless gun': useless_gun, 'connor pushes circle': connor_pushes_circle,
+         'lisa simpson presentation': lisa_simpson_presentation, 'offering sword': offering_sword,
+         'domino effect': domino_effect}
