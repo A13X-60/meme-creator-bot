@@ -356,13 +356,30 @@ def create_meme(message, curr_meme, meme_content):
                           spacing=3, align='center')
             draw.text(((width - W) / 2, (height - H) / 2), modifiedtext, fill=Memes[curr_meme].font_colour,
                       font=font_type, spacing=3, align='center')
-            # watermark_font_size =
-            # watermark_font = ImageFont.truetype('impact.ttf', watermark_font_size)
-            # draw.text((0, im.size[1] - draw.textsize(text, font=font_type)[1]), '@MemeCreate_bot', font=watermark_font,
-            #          fill=(0, 0, 0), spacing=3)
         meme.paste(im, position, im)
         del im
         j += 1
+    draw_wm = ImageDraw.Draw(meme)
+    if meme.size[0] > meme.size[1]:
+        watermark_font_size = int(meme.size[0] / 120 * 3)
+    else:
+        watermark_font_size = int(meme.size[1] / 120 * 3)
+    watermark_font = ImageFont.truetype('impact.ttf', watermark_font_size)
+    draw_wm.text((2, meme.size[1] - (draw_wm.textsize('@MemeCreate_bot', font=watermark_font)[1] + 4)),
+                 '@MemeCreate_bot', font=watermark_font,
+                 fill=(0, 0, 0), spacing=3, aling='left')
+    draw_wm.text((4, meme.size[1] - (draw_wm.textsize('@MemeCreate_bot', font=watermark_font)[1] + 4)),
+                 '@MemeCreate_bot', font=watermark_font,
+                 fill=(0, 0, 0), spacing=3, aling='left')
+    draw_wm.text((2, meme.size[1] - (draw_wm.textsize('@MemeCreate_bot', font=watermark_font)[1] + 2)),
+                 '@MemeCreate_bot', font=watermark_font,
+                 fill=(0, 0, 0), spacing=3, aling='left')
+    draw_wm.text((4, meme.size[1] - (draw_wm.textsize('@MemeCreate_bot', font=watermark_font)[1] + 2)),
+                 '@MemeCreate_bot', font=watermark_font,
+                 fill=(0, 0, 0), spacing=3, aling='left')
+    draw_wm.text((3, meme.size[1] - (draw_wm.textsize('@MemeCreate_bot', font=watermark_font)[1] + 3)),
+                 '@MemeCreate_bot', font=watermark_font,
+                 fill=(255, 255, 255), spacing=3, aling='left')
     bio = BytesIO()
     bio.name = 'meme.png'
     meme.save(bio, 'PNG')
