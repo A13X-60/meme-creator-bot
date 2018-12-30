@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#import redis
+import redis
 import os
 import telebot
 import time
@@ -11,11 +11,9 @@ from telebot import types
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 
-#token = os.environ['TELEGRAM_TOKEN']
-#r = redis.from_url(os.environ.get('REDIS_URL'))
-#analytics_api_key = os.environ['ANALYTICS_API_KEY']
-token = '617312566:AAEvNLoOwmngACDkGcJfDkqiUhhV9i28yS8'
-analytics_api_key = '9Mp2cywZur16kUylDH6LG8de33Sd2G8YPiUY5Pj9'
+token = os.environ['TELEGRAM_TOKEN']
+r = redis.from_url(os.environ.get('REDIS_URL'))
+analytics_api_key = os.environ['ANALYTICS_API_KEY']
 analytics_incoming_url = 'https://tracker.dashbot.io/track?platform=universal&v=10.1.1-rest&type=incoming&apiKey=' + analytics_api_key
 analytics_outgoing_url = 'https://tracker.dashbot.io/track?platform=universal&v=10.1.1-rest&type=outgoing&apiKey=' + analytics_api_key
 
@@ -358,10 +356,10 @@ def create_meme(message, curr_meme, meme_content):
                           spacing=3, align='center')
             draw.text(((width - W) / 2, (height - H) / 2), modifiedtext, fill=Memes[curr_meme].font_colour,
                       font=font_type, spacing=3, align='center')
-            watermark_font_size =
-            watermark_font = ImageFont.truetype('impact.ttf', watermark_font_size)
-            draw.text((0, im.size[1] - draw.textsize(text, font=font_type)[1]), '@MemeCreate_bot', font=watermark_font,
-                      fill=(0, 0, 0), spacing=3)
+            # watermark_font_size =
+            # watermark_font = ImageFont.truetype('impact.ttf', watermark_font_size)
+            # draw.text((0, im.size[1] - draw.textsize(text, font=font_type)[1]), '@MemeCreate_bot', font=watermark_font,
+            #          fill=(0, 0, 0), spacing=3)
         meme.paste(im, position, im)
         del im
         j += 1
