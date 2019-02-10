@@ -80,6 +80,7 @@ woman_with_microphones = Meme({(381, 233): (28, 157), (415, 221): (465, 161)}, '
 gillette_ad = Meme({(323, 160): (468, 205), (367, 245): (58, 287), (368, 332): (71, 831)}, 'impact.ttf', (255, 255, 255))
 angry_crowd = Meme({(384, 122): (82, 39), (502, 258): (562, 260), (408, 145): (70, 560)}, 'impact.ttf', (0, 0, 0))
 professionals_have_standards = Meme({(800, 247): (0, 0)}, 'helveticaneue.ttf', (0, 0, 0))
+you_act_like_youre_better = Meme({(295, 251): (152, 0), (170, 209): (25, 348), (129, 87): (198, 369), (155, 175): (307, 337)}, 'impact.ttf', (255, 255, 255))
 Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': expanding_brain,
          'who would win': who_would_win, 'the rock driving': the_rock_driving, 'sleeping shaq': sleeping_shaq,
          'nut button': nut_button, 'batman slapping robin': batman_slapping_robin, 'is this a pigeon': is_this_a_pigeon,
@@ -99,4 +100,4 @@ Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': 
          'lisa simpson presentation': lisa_simpson_presentation, 'offering sword': offering_sword,
          'domino effect': domino_effect, 'prince charles steals wheel': prince_charles_steals_wheel,
 		 'woman with microphones': woman_with_microphones, 'gillette ad': gillette_ad, 'angry crowd': angry_crowd,
-		 'professionals have standards': professionals_have_standards}
+		 'professionals have standards': professionals_have_standards, 'you act like you\'re better': you_act_like_youre_better}
