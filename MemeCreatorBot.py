@@ -213,7 +213,7 @@ def generate_inline_layout(page):
     if page > 0:
         button_left = types.InlineKeyboardButton(text="⬅ Page " + str(page), callback_data='L3FT' + str(page))
         nav_btns.append(button_left)
-    if page < len(Memes) // memes_per_page:
+    if (page + 1) < len(Memes) // memes_per_page:
         button_right = types.InlineKeyboardButton(text="Page " + str(page + 2) + ' ➡',
                                                   callback_data='R1GHT' + str(page))
         nav_btns.append(button_right)
