@@ -198,7 +198,7 @@ def button_callback(call):
 
 # Generation of the inline layout for the particular page for meme selection
 def generate_inline_layout(page):
-    memes_per_page = 8
+    memes_per_page = 12
     page_markup = types.InlineKeyboardMarkup(row_width=2)
     button_list = list()
     nav_btns = list()
