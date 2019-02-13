@@ -133,13 +133,13 @@ def create_pic_available_memes():
     font_size = 40
     txt = Image.new("RGBA", (281, 42), (255, 255, 255, 0))
     draw = ImageDraw.Draw(txt)
-    font_head = ImageFont.truetype('impact.ttf', 40)  # Header font
-    font_title = ImageFont.truetype('impact.ttf', font_size)  # Meme titles' font
+    font_head = ImageFont.truetype('fonts/impact.ttf', 40)  # Header font
+    font_title = ImageFont.truetype('fonts/impact.ttf', font_size)  # Meme titles' font
     maxstr = max(list(Memes.keys()), key=len)  # Maximum length of the meme title
     # Fit the font size for the titles
     while draw.textsize(maxstr, font_title)[0] > 256 or draw.textsize(maxstr, font_title)[1] > 30:
         font_size -= 1
-        font_title = ImageFont.truetype('impact.ttf', font_size)
+        font_title = ImageFont.truetype('fonts/impact.ttf', font_size)
     head_w, head_h = draw.textsize('Available memes', font_head)  # Header size
     # Calculate the size of the picture
     background = Image.new('RGBA', (memes_per_row * 256 + 10 * (memes_per_row + 1),
