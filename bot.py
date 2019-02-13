@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-import redis
 import os
+import redis
 import telebot
 import time
 
@@ -9,7 +9,7 @@ from image_editing import create_meme, create_pic_available_memes
 from meme_database import Memes
 
 token = os.environ['TELEGRAM_TOKEN']
-r = redis.from_url(os.environ['REDIS_URL'])
+r = redis.from_url(os.environ.get('REDIS_URL'))
 
 bot = telebot.TeleBot(token)
 print('Starting bot:', bot.get_me())
