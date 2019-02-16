@@ -8,10 +8,10 @@ from analytics import send_in_analytics, send_out_analytics
 from image_editing import create_meme, create_pic_available_memes
 from meme_database import Memes
 
-token = os.environ['TELEGRAM_TOKEN']
-r = redis.from_url(os.environ.get('REDIS_URL'))
+TOKEN = os.environ['TELEGRAM_TOKEN']
+R = redis.from_url(os.environ.get('REDIS_URL'))
 
-bot = telebot.TeleBot(token)
+bot = telebot.TeleBot(TOKEN)
 print('Starting bot:', bot.get_me())
 
 # Menu reply markup
@@ -83,7 +83,7 @@ def send_available_memes(message):
     else:
         bot.send_photo(message.chat.id, available_memes_file_id)
     send_out_analytics({'text': '', 'userId': str(message.from_user.id), 'images': [
-        {'url': 'https://api.telegram.org/file/bot' + token + '/' + bot.get_file(available_memes_file_id).file_path}]})
+        {'url': 'https://api.telegram.org/file/bot' + TOKEN + '/' + bot.get_file(available_memes_file_id).file_path}]})
 
 
 # /information command handler. Displays some information about bot.
@@ -135,7 +135,9 @@ def choose_meme_right(call):
 # Callback handler for pushing button on inline keyboard to select meme.
 @bot.callback_query_handler(func=lambda call: call.data in Memes.keys())
 def button_callback(call):
-    sent_messages = list()
+
+    sent_messages = list()  # Accumulating sent messages in case the user will send /cancel command
+
     bot.answer_callback_query(call.id)
     send_in_analytics({'text': call.data, 'userId': str(call.from_user.id),
                        "intent": {"name": "MEME CREATION", "inputs": [{"name": "meme", "value": call.data}]}})
@@ -149,56 +151,70 @@ def button_callback(call):
         'text': msg.text,
         'userId': str(call.from_user.id),
         "intent": {"name": "MEME CREATION", "inputs": [{"name": "creation info", "value": msg.text}]}})
+
     if Memes[curr_meme].text_fields_file_id is None:
         photo_message = bot.send_photo(call.message.chat.id, open('MemeTextFields/' + curr_meme + '.png', 'rb'))
         Memes[curr_meme].text_fields_file_id = photo_message.photo[0].file_id
         sent_messages.append(photo_message.message_id)
     else:
         sent_messages.append(bot.send_photo(call.message.chat.id, Memes[curr_meme].text_fields_file_id).message_id)
+
     area = 1
     num_of_fields_to_read = len(Memes[curr_meme].areas.keys())
     markup = telebot.types.ForceReply()
     meme_content = list()
+
     msg = bot.send_message(call.message.chat.id, 'Enter the content for the area 1:', reply_markup=markup)
+    sent_messages.append(msg)
     send_out_analytics({'text': msg.text, "intent": {"name": "MEME CREATION",
                                                      "inputs": [{"name": "area", "value": str(1)}]}})
+
     bot.register_next_step_handler(msg, content_injection, num_of_fields_to_read, area, curr_meme, meme_content,
                                    sent_messages)
 
 
 # Generation of the inline layout for the particular page for meme selection
 def generate_inline_layout(page):
+
     memes_per_page = 12
     page_markup = telebot.types.InlineKeyboardMarkup(row_width=2)
     button_list = list()
     nav_btns = list()
+
     if page * memes_per_page + memes_per_page > len(Memes):
         end_index = len(Memes)
     else:
         end_index = page * memes_per_page + memes_per_page
+
     for i in range(page * memes_per_page, end_index):
         btn = telebot.types.InlineKeyboardButton(text=list(Memes)[i].upper(), callback_data=list(Memes)[i])
         button_list.append(btn)
     page_markup.add(*[i for i in button_list])
+
     if page > 0:
         button_left = telebot.types.InlineKeyboardButton(text="⬅ Page " + str(page),
                                                          callback_data='L3FT' + str(page))
         nav_btns.append(button_left)
+
     if (page + 1) < len(Memes) // memes_per_page:
         button_right = telebot.types.InlineKeyboardButton(text="Page " + str(page + 2) + ' ➡',
                                                           callback_data='R1GHT' + str(page))
         nav_btns.append(button_right)
+
     page_markup.add(*[i for i in nav_btns])
     return page_markup
 
 
 # Collecting data for meme contents
 def content_injection(message, num_of_fields_to_read, area, curr_meme, meme_content, sent_messages):
+
     num_of_fields_to_read -= 1
     area += 1
     markup = telebot.types.ForceReply()
+
     if message.text == '-':
         meme_content.append('')
+
     elif message.text == '/cancel':
         send_in_analytics({'text': message.text, 'userId': message.from_user.id})
         send_out_analytics(
@@ -207,43 +223,50 @@ def content_injection(message, num_of_fields_to_read, area, curr_meme, meme_cont
         num_of_fields_to_read = -1
         delete_messages(message.chat.id, sent_messages)
         del meme_content
+
     elif message.content_type == 'photo':
         file_id = message.photo[-1].file_id
         file = bot.get_file(file_id)
         meme_content.append(file.file_path)
         send_in_analytics({'text': '', 'userId': str(message.from_user.id),
-                           'images': [{'url': 'https://api.telegram.org/file/bot' + token + '/' + file.file_path}]})
+                           'images': [{'url': 'https://api.telegram.org/file/bot' + TOKEN + '/' + file.file_path}]})
+
     elif message.content_type == 'sticker':
         sticker = message.sticker.file_id
         sticker_file = bot.get_file(sticker)
         meme_content.append(sticker_file.file_path)
         send_in_analytics({'text': '', 'userId': str(message.from_user.id),
-                           'images': [{'url': 'https://api.telegram.org/file/bot' + token + '/' + sticker_file.file_path
+                           'images': [{'url': 'https://api.telegram.org/file/bot' + TOKEN + '/' + sticker_file.file_path
                                        }]})
+
     elif message.content_type == 'text':
         meme_content.append(message.text)
         send_in_analytics({'text': message.text, 'userId': str(message.from_user.id)})
+
     else:
         err_msg = bot.send_message(message.chat.id, 'Please, try to send me some text, picture or a sticker')
         send_out_analytics({'text': err_msg.text, 'userId': message.from_user.id, 'intent': {'name': 'NotHandled'}})
         sent_messages.append(err_msg.message_id)
         num_of_fields_to_read += 1
         area -= 1
+
     if num_of_fields_to_read > 0:
         msg = bot.send_message(message.chat.id, 'Enter the content for the area ' + str(area) + ':',
                                reply_markup=markup)
         send_out_analytics({'text': msg.text, 'userId': str(message.from_user.id)})
         sent_messages.append(msg.message_id)
-        bot.register_next_step_handler(msg, content_injection, num_of_fields_to_read, area, curr_meme, meme_content,
-                                       sent_messages)
+        bot.register_next_step_handler(msg, content_injection, num_of_fields_to_read, area,
+                                       curr_meme, meme_content, sent_messages)
+
     elif num_of_fields_to_read == 0:
         send_out_analytics({'text': bot.send_message(message.chat.id, 'Your meme', reply_markup=menu).text,
                             'userId': str(message.from_user.id)})
-        file_id = bot.send_photo(message.chat.id, create_meme(curr_meme, meme_content, token)).photo[-1].file_id
+        file_id = bot.send_photo(message.chat.id, create_meme(curr_meme, meme_content, TOKEN)).photo[-1].file_id
         file = bot.get_file(file_id)
         send_out_analytics({'text': '', 'userId': str(message.from_user.id),
-                           'images': [{'url': 'https://api.telegram.org/file/bot' + token + '/' + file.file_path}]})
+                           'images': [{'url': 'https://api.telegram.org/file/bot' + TOKEN + '/' + file.file_path}]})
         del sent_messages
+
     else:
         pass
 
