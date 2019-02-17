@@ -157,6 +157,15 @@ you_act_like_youre_better = Meme(
     {(295, 251): (152, 0), (170, 209): (25, 348), (129, 87): (198, 369), (155, 175): (307, 337)},
     'impact.ttf',
     (255, 255, 255))
+let_me_in = Meme({(300, 187): (279, 186), (268, 226): (3, 194)},
+                 'impact.ttf',
+                 (255, 255, 255))
+well_yes_but_no = Meme({(800, 156): (0, 0)},
+                       'helveticaneue.ttf',
+                       (0, 0, 0))
+and_thats_a_fact = Meme({(331, 253): (809, 179)},
+                        'impact.ttf',
+                        (0, 0, 0))
 Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': expanding_brain,
          'who would win': who_would_win, 'the rock driving': the_rock_driving, 'sleeping shaq': sleeping_shaq,
          'nut button': nut_button, 'batman slapping robin': batman_slapping_robin, 'is this a pigeon': is_this_a_pigeon,
@@ -177,4 +186,5 @@ Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': 
          'domino effect': domino_effect, 'prince charles steals wheel': prince_charles_steals_wheel,
          'woman with microphones': woman_with_microphones, 'gillette ad': gillette_ad, 'angry crowd': angry_crowd,
          'professionals have standards': professionals_have_standards,
-         'you act like you\'re better': you_act_like_youre_better}
+         'you act like you\'re better': you_act_like_youre_better, 'let me in': let_me_in,
+         'well yes, but no': well_yes_but_no, 'and that\'s a fact': and_thats_a_fact}
