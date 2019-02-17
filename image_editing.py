@@ -83,7 +83,7 @@ def create_meme(curr_meme, meme_content, token):
                 while (draw.textsize(modifiedtext, font=font_type)[1] > height or
                         draw.textsize(modifiedtext, font=font_type)[0] > width):
                     font_size -= 1
-                    font_type = ImageFont.truetype(Memes[curr_meme].font_name, font_size)
+                    font_type = ImageFont.truetype('fonts/' + Memes[curr_meme].font_name, font_size)
 
             datas = im.getdata()
             new_data = []
