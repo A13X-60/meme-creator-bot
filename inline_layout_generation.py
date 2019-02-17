@@ -16,6 +16,10 @@ def generate_meme_inline_layout(meme_title):
         prev_button = telebot.types.InlineKeyboardButton(text="⬅ Prev",
                                                          callback_data="PR3V" + prev_meme)
         nav_buttons.append(prev_button)
+
+    cancel_button = telebot.types.InlineKeyboardButton(text="❌", callback_data='CANC3L')
+    nav_buttons.append(cancel_button)
+
     if meme_index < len(Memes) - 1:
         next_meme = list(Memes.keys())[meme_index+1]
         next_button = telebot.types.InlineKeyboardButton(text="Next ➡",
@@ -57,6 +61,9 @@ def generate_page_inline_layout(page):
         button_left = telebot.types.InlineKeyboardButton(text="⬅ Page " + str(page),
                                                          callback_data='L3FT' + str(page))
         nav_buttons.append(button_left)
+
+    cancel_button = telebot.types.InlineKeyboardButton(text="❌", callback_data='CANC3L')
+    nav_buttons.append(cancel_button)
 
     if page < len(Memes) // memes_per_page:
         button_right = telebot.types.InlineKeyboardButton(text="Page " + str(page + 2) + ' ➡',

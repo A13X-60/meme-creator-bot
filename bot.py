@@ -178,6 +178,12 @@ def back_to_menu(call):
     bot.delete_message(call.message.chat.id, call.message.message_id)
 
 
+# Callback handler for pushing button on inline keyboard to cancel meme creating
+@bot.callback_query_handler(func=lambda call: 'CANC3L' == str(call.data))
+def back_to_menu(call):
+    bot.delete_message(call.message.chat.id, call.message.message_id)
+
+
 # Callback handler for pushing button on inline keyboard to return back to the meme selecting menu
 @bot.callback_query_handler(func=lambda call: 'S3L3CT' in str(call.data))
 def select_meme(call):
@@ -188,8 +194,6 @@ def select_meme(call):
 
     sent_messages_id = list()  # Accumulating sent messages in case the user will send /cancel command
     sent_messages_id.append(msg.message_id)
-    send_in_analytics({'text': call.data, 'userId': str(call.from_user.id),
-                       "intent": {"name": "MEME CREATION", "inputs": [{"name": "meme", "value": call.data}]}})
 
     msg = bot.send_message(call.message.chat.id, parse_mode='Markdown',
                            text='Fill the following content areas. Send me a photo, a text or even a _STICKER_.\n\n'
