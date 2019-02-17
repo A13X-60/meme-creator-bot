@@ -62,13 +62,13 @@ def generate_page_inline_layout(page):
                                                          callback_data='L3FT' + str(page))
         nav_buttons.append(button_left)
 
-    cancel_button = telebot.types.InlineKeyboardButton(text="❌", callback_data='CANC3L')
-    nav_buttons.append(cancel_button)
-
     if page < len(Memes) // memes_per_page:
         button_right = telebot.types.InlineKeyboardButton(text="Page " + str(page + 2) + ' ➡',
                                                           callback_data='R1GHT' + str(page))
         nav_buttons.append(button_right)
+
+    cancel_button = telebot.types.InlineKeyboardButton(text="❌", callback_data='CANC3L')
+    nav_buttons.append(cancel_button)
 
     page_markup.add(*[i for i in nav_buttons])
     return page_markup
