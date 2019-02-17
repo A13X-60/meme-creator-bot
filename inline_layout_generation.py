@@ -58,7 +58,7 @@ def generate_page_inline_layout(page):
                                                          callback_data='L3FT' + str(page))
         nav_buttons.append(button_left)
 
-    if (page + 1) < len(Memes) // memes_per_page:
+    if page < len(Memes) // memes_per_page:
         button_right = telebot.types.InlineKeyboardButton(text="Page " + str(page + 2) + ' ➡',
                                                           callback_data='R1GHT' + str(page))
         nav_buttons.append(button_right)
