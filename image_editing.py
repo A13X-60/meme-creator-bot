@@ -17,15 +17,12 @@ def create_meme(curr_meme, meme_content, token):
 
         width, height = WH[0], WH[1]  # Width and height of the current content area
         text = meme_content[j]  # Getting content for the current content area
+        add_text = True  # Add text information by default
 
         # Creating image with the following size as a "patch" which will be filled with text or image
         # and injected in the meme template
         im = Image.new("RGBA", (width, height), (255, 255, 255, 0))
         draw = ImageDraw.Draw(im)
-
-        font_size = int(10*math.sqrt(width/len(text)))  # Calculating initial font size
-        font_type = ImageFont.truetype('fonts/' + Memes[curr_meme].font_name, font_size)  # Getting meme's font
-        add_text = True  # Add text information by default
 
         # If the sent content is a sticker or a photo, get the image from Telegram API
         if (('photos/' in text or 'stickers/' in text) and '.jpg' in text) or ('stickers/' in text and '.webp'):
@@ -43,7 +40,10 @@ def create_meme(curr_meme, meme_content, token):
                 print(err)
                 add_text = True
         # If the content is a text
-        elif add_text:
+        elif add_text and len(text) > 0:
+
+            font_size = int(10 * math.sqrt(width / len(text)))  # Calculating initial font size
+            font_type = ImageFont.truetype('fonts/' + Memes[curr_meme].font_name, font_size)  # Getting meme's font
             modifiedtext = ''  # Variable for formatted string
             currstr = ''  # Variable for string for the current line of text in the content area
 
@@ -137,6 +137,7 @@ def create_meme(curr_meme, meme_content, token):
     draw_wm.text((4, meme.size[1] - (draw_wm.textsize('@MemeCreate_bot', font=watermark_font)[1] + 2)),
                  '@MemeCreate_bot', font=watermark_font,
                  fill=(0, 0, 0), spacing=3, aling='left')
+
     draw_wm.text((3, meme.size[1] - (draw_wm.textsize('@MemeCreate_bot', font=watermark_font)[1] + 3)),
                  '@MemeCreate_bot', font=watermark_font,
                  fill=(255, 255, 255), spacing=3, aling='left')

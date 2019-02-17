@@ -6,6 +6,7 @@ import time
 
 from analytics import send_in_analytics, send_out_analytics
 from image_editing import create_meme, create_pic_available_memes
+from inline_layout_generation import generate_meme_inline_layout, generate_page_inline_layout
 from meme_database import Memes
 
 TOKEN = os.environ['TELEGRAM_TOKEN']
@@ -64,7 +65,7 @@ def choose_meme(message):
     send_in_analytics({'text': message.text, 'userId': str(message.from_user.id),
                        "intent": {"name": "MEME CREATION", "inputs": [{"name": "query", "value": message.text}]}})
     page = 0
-    markup = generate_inline_layout(page)  # Setup inline keyboard markup
+    markup = generate_page_inline_layout(page)  # Setup inline keyboard markup
     msg = bot.send_message(message.chat.id, 'Select the meme from database', reply_markup=markup)
     send_out_analytics(
         {'text': msg.text,
@@ -120,44 +121,84 @@ def respond_to_message(message):
 
 # Callback handler for pushing button on inline keyboard to switch to the previous page
 @bot.callback_query_handler(func=lambda call: 'L3FT' in str(call.data))
-def choose_meme_left(call):
-    markup = generate_inline_layout(int(str(call.data)[4]) - 1)
+def choose_page_left(call):
+    markup = generate_page_inline_layout(int(str(call.data)[4]) - 1)
     bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=markup)
 
 
 # Callback handler for pushing button on inline keyboard to switch to the next page
 @bot.callback_query_handler(func=lambda call: 'R1GHT' in str(call.data))
-def choose_meme_right(call):
-    markup = generate_inline_layout(int(str(call.data)[5]) + 1)
+def choose_page_right(call):
+    markup = generate_page_inline_layout(int(str(call.data)[5]) + 1)
     bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=markup)
 
 
-# Callback handler for pushing button on inline keyboard to select meme.
-@bot.callback_query_handler(func=lambda call: call.data in Memes.keys())
-def button_callback(call):
+# Callback handler for pushing button on inline keyboard to switch to the previous meme
+@bot.callback_query_handler(func=lambda call: 'PR3V' in str(call.data))
+def choose_meme_prev(call):
+    prev_meme = str(call.data)[4:]
+    markup = generate_meme_inline_layout(prev_meme)
+    if Memes[prev_meme].text_fields_file_id is None:
+        photo = telebot.types.InputMediaPhoto(open('MemeTextFields/{}.png'.format(prev_meme), 'rb'),
+                                              prev_meme[0].upper() + prev_meme[1:])
+        photo_message = bot.edit_message_media(photo, call.message.chat.id,
+                                               call.message.message_id, reply_markup=markup)
+        Memes[prev_meme].text_fields_file_id = photo_message.photo[0].file_id
+    else:
+        photo = telebot.types.InputMediaPhoto(Memes[prev_meme].text_fields_file_id,
+                                              prev_meme[0].upper() + prev_meme[1:])
+        bot.edit_message_media(photo, call.message.chat.id,
+                               call.message.message_id, reply_markup=markup)
 
-    sent_messages = list()  # Accumulating sent messages in case the user will send /cancel command
 
+# Callback handler for pushing button on inline keyboard to switch to the next meme
+@bot.callback_query_handler(func=lambda call: 'N3XT' in str(call.data))
+def choose_meme_next(call):
+    next_meme = str(call.data)[4:]
+    markup = generate_meme_inline_layout(next_meme)
+    if Memes[next_meme].text_fields_file_id is None:
+        photo = telebot.types.InputMediaPhoto(open('MemeTextFields/{}.png'.format(next_meme), 'rb'),
+                                              next_meme[0].upper() + next_meme[1:])
+        photo_message = bot.edit_message_media(photo, call.message.chat.id,
+                                               call.message.message_id, reply_markup=markup)
+        Memes[next_meme].text_fields_file_id = photo_message.photo[0].file_id
+    else:
+        photo = telebot.types.InputMediaPhoto(Memes[next_meme].text_fields_file_id,
+                                              next_meme[0].upper() + next_meme[1:])
+        bot.edit_message_media(photo, call.message.chat.id,
+                               call.message.message_id, reply_markup=markup)
+
+
+# Callback handler for pushing button on inline keyboard to return back to the meme selecting menu
+@bot.callback_query_handler(func=lambda call: 'BACK' == str(call.data))
+def back_to_menu(call):
+    page = 0
+    markup = generate_page_inline_layout(page)  # Setup inline keyboard markup
+    bot.send_message(call.message.chat.id, 'Select the meme from database', reply_markup=markup)
+    bot.delete_message(call.message.chat.id, call.message.message_id)
+
+
+# Callback handler for pushing button on inline keyboard to return back to the meme selecting menu
+@bot.callback_query_handler(func=lambda call: 'S3L3CT' in str(call.data))
+def select_meme(call):
+
+    curr_meme = str(call.data)[6:]
     bot.answer_callback_query(call.id)
+    msg = bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=None)
+
+    sent_messages_id = list()  # Accumulating sent messages in case the user will send /cancel command
+    sent_messages_id.append(msg.message_id)
     send_in_analytics({'text': call.data, 'userId': str(call.from_user.id),
                        "intent": {"name": "MEME CREATION", "inputs": [{"name": "meme", "value": call.data}]}})
-    bot.delete_message(call.message.chat.id, call.message.message_id)
-    curr_meme = call.data
+
     msg = bot.send_message(call.message.chat.id, parse_mode='Markdown',
                            text='Fill the following content areas. Send me a photo, a text or even a _STICKER_.\n\n'
                                 '(type \"-\" to leave the area blank)')
-    sent_messages.append(msg.message_id)
+    sent_messages_id.append(msg.message_id)
     send_out_analytics({
         'text': msg.text,
         'userId': str(call.from_user.id),
         "intent": {"name": "MEME CREATION", "inputs": [{"name": "creation info", "value": msg.text}]}})
-
-    if Memes[curr_meme].text_fields_file_id is None:
-        photo_message = bot.send_photo(call.message.chat.id, open('MemeTextFields/' + curr_meme + '.png', 'rb'))
-        Memes[curr_meme].text_fields_file_id = photo_message.photo[0].file_id
-        sent_messages.append(photo_message.message_id)
-    else:
-        sent_messages.append(bot.send_photo(call.message.chat.id, Memes[curr_meme].text_fields_file_id).message_id)
 
     area = 1
     num_of_fields_to_read = len(Memes[curr_meme].areas.keys())
@@ -165,44 +206,34 @@ def button_callback(call):
     meme_content = list()
 
     msg = bot.send_message(call.message.chat.id, 'Enter the content for the area 1:', reply_markup=markup)
-    sent_messages.append(msg)
+    sent_messages_id.append(msg.message_id)
     send_out_analytics({'text': msg.text, "intent": {"name": "MEME CREATION",
                                                      "inputs": [{"name": "area", "value": str(1)}]}})
 
     bot.register_next_step_handler(msg, content_injection, num_of_fields_to_read, area, curr_meme, meme_content,
-                                   sent_messages)
+                                   sent_messages_id)
 
 
-# Generation of the inline layout for the particular page for meme selection
-def generate_inline_layout(page):
+# Callback handler for pushing button on inline keyboard to select meme.
+@bot.callback_query_handler(func=lambda call: call.data in Memes.keys())
+def menu_button_callback(call):
 
-    memes_per_page = 12
-    page_markup = telebot.types.InlineKeyboardMarkup(row_width=2)
-    button_list = list()
-    nav_btns = list()
+    meme_markup = generate_meme_inline_layout(call.data)
+    curr_meme = call.data
 
-    if page * memes_per_page + memes_per_page > len(Memes):
-        end_index = len(Memes)
+    if Memes[curr_meme].text_fields_file_id is None:
+        photo_message = bot.send_photo(call.message.chat.id,
+                                       open('MemeTextFields/{}.png'.format(curr_meme), 'rb'),
+                                       caption=call.data[0].upper() + call.data[1:],
+                                       reply_markup=meme_markup)
+        Memes[curr_meme].text_fields_file_id = photo_message.photo[0].file_id
     else:
-        end_index = page * memes_per_page + memes_per_page
+        bot.send_photo(call.message.chat.id,
+                       Memes[curr_meme].text_fields_file_id,
+                       caption=call.data[0].upper() + call.data[1:],
+                       reply_markup=meme_markup)
 
-    for i in range(page * memes_per_page, end_index):
-        btn = telebot.types.InlineKeyboardButton(text=list(Memes)[i].upper(), callback_data=list(Memes)[i])
-        button_list.append(btn)
-    page_markup.add(*[i for i in button_list])
-
-    if page > 0:
-        button_left = telebot.types.InlineKeyboardButton(text="⬅ Page " + str(page),
-                                                         callback_data='L3FT' + str(page))
-        nav_btns.append(button_left)
-
-    if (page + 1) < len(Memes) // memes_per_page:
-        button_right = telebot.types.InlineKeyboardButton(text="Page " + str(page + 2) + ' ➡',
-                                                          callback_data='R1GHT' + str(page))
-        nav_btns.append(button_right)
-
-    page_markup.add(*[i for i in nav_btns])
-    return page_markup
+    bot.delete_message(call.message.chat.id, call.message.message_id)
 
 
 # Collecting data for meme contents

@@ -1,7 +1,7 @@
 # List of required packages (Dependencies)
 
 Pillow
-pyTelegramBotAPI == 3.6.3
+pyTelegramBotAPI == 3.6.6
 redis
 requests
 
