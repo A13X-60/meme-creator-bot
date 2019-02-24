@@ -182,6 +182,7 @@ def back_to_menu(call):
 @bot.callback_query_handler(func=lambda call: 'CANC3L' == str(call.data))
 def back_to_menu(call):
     bot.delete_message(call.message.chat.id, call.message.message_id)
+    bot.send_message(call.message.chat.id, 'Current action was cancelled.', reply_markup=menu)
 
 
 # Callback handler for pushing button on inline keyboard to return back to the meme selecting menu

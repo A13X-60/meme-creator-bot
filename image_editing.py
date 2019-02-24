@@ -47,7 +47,8 @@ def create_meme(curr_meme, meme_content, token):
             modifiedtext = ''  # Variable for formatted string
             currstr = ''  # Variable for string for the current line of text in the content area
 
-            if draw.textsize(text, font=font_type)[0] < width:  # If text fits in the current content area
+            # If text fits the width of the content area, thus doesn't need to be split in multiple lines
+            if draw.textsize(text, font=font_type)[0] < width:
                 modifiedtext = text  # Leave everything unchanged
             else:
                 words = list()  # List of words for the text area
@@ -79,11 +80,11 @@ def create_meme(curr_meme, meme_content, token):
                     if i == len(words) - 1:  # If last word
                         modifiedtext += currstr  # Simply add to the resulting string
 
-                # Fit the text size for the content area
-                while (draw.textsize(modifiedtext, font=font_type)[1] > height or
-                        draw.textsize(modifiedtext, font=font_type)[0] > width):
-                    font_size -= 1
-                    font_type = ImageFont.truetype('fonts/' + Memes[curr_meme].font_name, font_size)
+            # Fit the text size for the content area
+            while (draw.textsize(modifiedtext, font=font_type)[0] > width or
+                   draw.textsize(modifiedtext, font=font_type)[1] > height):
+                font_size -= 1
+                font_type = ImageFont.truetype('fonts/' + Memes[curr_meme].font_name, font_size)
 
             datas = im.getdata()
             new_data = []
