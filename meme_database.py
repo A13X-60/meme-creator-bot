@@ -166,6 +166,9 @@ well_yes_but_no = Meme({(800, 156): (0, 0)},
 and_thats_a_fact = Meme({(331, 253): (809, 179)},
                         'impact.ttf',
                         (0, 0, 0))
+doggies_say_the_truth = Meme({(479, 171): (413, 248)},
+                             'arial.ttf',
+                             (0, 0 ,0))
 Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': expanding_brain,
          'who would win': who_would_win, 'the rock driving': the_rock_driving, 'sleeping shaq': sleeping_shaq,
          'nut button': nut_button, 'batman slapping robin': batman_slapping_robin, 'is this a pigeon': is_this_a_pigeon,
@@ -187,4 +190,5 @@ Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': 
          'woman with microphones': woman_with_microphones, 'gillette ad': gillette_ad, 'angry crowd': angry_crowd,
          'professionals have standards': professionals_have_standards,
          'you act like you\'re better': you_act_like_youre_better, 'let me in': let_me_in,
-         'well yes, but no': well_yes_but_no, 'and that\'s a fact': and_thats_a_fact}
+         'well yes, but no': well_yes_but_no, 'and that\'s a fact': and_thats_a_fact, 
+         'doggies say the truth': doggies_say_the_truth}
