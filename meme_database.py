@@ -175,6 +175,9 @@ displeased_squidward = Meme({(384, 385): (384, 0), (384, 383): (384, 385)},
 cat_bitten_by_alligator = Meme({(313, 243): (172, 360), (316, 227): (0, 127)},
 							   'impact.ttf',
 							   (255, 255, 255))
+spongebob_burns_paper = Meme({(250, 321): (72, 111)},
+							 'impact.ttf',
+							 (0, 0, 0))
 Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': expanding_brain,
          'who would win': who_would_win, 'the rock driving': the_rock_driving, 'sleeping shaq': sleeping_shaq,
          'nut button': nut_button, 'batman slapping robin': batman_slapping_robin, 'is this a pigeon': is_this_a_pigeon,
@@ -198,4 +201,4 @@ Memes = {'drake': drake, 'scroll of truth': scroll_of_truth, 'expanding brain': 
          'you act like you\'re better': you_act_like_youre_better, 'let me in': let_me_in,
          'well yes, but no': well_yes_but_no, 'and that\'s a fact': and_thats_a_fact, 
          'doggies say the truth': doggies_say_the_truth, 'displeased squidward': displeased_squidward,
-		 'cat bitten by alligator': cat_bitten_by_alligator}
+		 'cat bitten by alligator': cat_bitten_by_alligator, 'spongebob burns paper': spongebob_burns_paper}
