@@ -180,7 +180,7 @@ def back_to_menu(call):
 
 # Callback handler for pushing button on inline keyboard to cancel meme creating
 @bot.callback_query_handler(func=lambda call: 'CANC3L' == str(call.data))
-def back_to_menu(call):
+def cancel_selection(call):
     bot.delete_message(call.message.chat.id, call.message.message_id)
     bot.send_message(call.message.chat.id, 'Current action was cancelled.', reply_markup=menu)
 
