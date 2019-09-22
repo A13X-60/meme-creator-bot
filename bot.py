@@ -19,9 +19,8 @@ print('Starting bot:', bot.get_me())
 menu = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
 btn1 = telebot.types.KeyboardButton('😂Create meme😂')
 btn2 = telebot.types.KeyboardButton('😎List of available memes😎')
-btn3 = telebot.types.KeyboardButton('🤔Information🤔')
-btn4 = telebot.types.KeyboardButton('☺Donations☺')
-menu.add(btn1, btn2, btn3, btn4)
+btn3 = telebot.types.KeyboardButton('☺Donations☺')
+menu.add(btn1, btn2, btn3)
 
 create_pic_available_memes()
 available_memes_file_id = None
@@ -85,17 +84,7 @@ def send_available_memes(message):
         bot.send_photo(message.chat.id, available_memes_file_id)
     send_out_analytics({'text': '', 'userId': str(message.from_user.id), 'images': [
         {'url': 'https://api.telegram.org/file/bot' + TOKEN + '/' + bot.get_file(available_memes_file_id).file_path}]})
-
-
-# /information command handler. Displays some information about bot.
-@bot.message_handler(func=lambda m: m.text == '🤔Information🤔')
-def info(message):
-    send_in_analytics({'text': message.text, 'userId': str(message.from_user.id)})
-    send_out_analytics({'text': bot.send_message(message.chat.id,
-                                                 'Bot made by @TheSubliminal\n'
-                                                 'Feel free to send me any suggestions or bug reports.').text,
-                        'userId': str(message.from_user.id)})
-
+    
 
 # /donations command handler. Displays information about ways to donate author.
 @bot.message_handler(func=lambda m: m.text == '☺Donations☺')
