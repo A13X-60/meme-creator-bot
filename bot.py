@@ -94,7 +94,7 @@ def donation_info(message):
                                                  parse_mode='Markdown',
                                                  text='If you want to thank me for the experience you had with this bot'
                                                       ' you can donate me via:\n\n'
-                                                      'PrivatBank:\n*4149 4978 5676 6680*\n\n'
+                                                      'PrivatBank:\n*5168 7453 0322 6440*\n\n'
                                                       'Bitcoin:\n*1HvF4uSHNz9z1zafqSr2N8rxXyHcqAGrmY*\n\n'
                                                       'Ethereum:\n*0x5714Dde9B12Bf629F185CeE90f263C05816B1616*').text,
                         'userId': str(message.from_user.id)})
