@@ -2,7 +2,6 @@
 
 Pillow
 pyTelegramBotAPI == 3.6.6
-redis
 requests
 
 #pyTelegramBotAPI

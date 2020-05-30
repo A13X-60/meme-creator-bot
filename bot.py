@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import redis
 import telebot
 import time
 
@@ -10,7 +9,6 @@ from inline_layout_generation import generate_meme_inline_layout, generate_page_
 from meme_database import Memes
 
 TOKEN = os.environ['TELEGRAM_TOKEN']
-R = redis.from_url(os.environ.get('REDIS_URL'))
 
 bot = telebot.TeleBot(TOKEN)
 print('Starting bot:', bot.get_me())
