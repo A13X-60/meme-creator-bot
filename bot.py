@@ -17,8 +17,7 @@ print('Starting bot:', bot.get_me())
 menu = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
 btn1 = telebot.types.KeyboardButton('😂Create meme😂')
 btn2 = telebot.types.KeyboardButton('😎List of available memes😎')
-btn3 = telebot.types.KeyboardButton('☺Donations☺')
-menu.add(btn1, btn2, btn3)
+menu.add(btn1, btn2)
 
 create_pic_available_memes()
 available_memes_file_id = None
@@ -82,20 +81,6 @@ def send_available_memes(message):
         bot.send_photo(message.chat.id, available_memes_file_id)
     send_out_analytics({'text': '', 'userId': str(message.from_user.id), 'images': [
         {'url': 'https://api.telegram.org/file/bot' + TOKEN + '/' + bot.get_file(available_memes_file_id).file_path}]})
-    
-
-# /donations command handler. Displays information about ways to donate author.
-@bot.message_handler(func=lambda m: m.text == '☺Donations☺')
-def donation_info(message):
-    send_in_analytics({'text': message.text, 'userId': str(message.from_user.id)})
-    send_out_analytics({'text': bot.send_message(message.chat.id,
-                                                 parse_mode='Markdown',
-                                                 text='If you want to thank me for the experience you had with this bot'
-                                                      ' you can donate me via:\n\n'
-                                                      'PrivatBank:\n*5168 7453 0322 6440*\n\n'
-                                                      'Bitcoin:\n*1HvF4uSHNz9z1zafqSr2N8rxXyHcqAGrmY*\n\n'
-                                                      'Ethereum:\n*0x5714Dde9B12Bf629F185CeE90f263C05816B1616*').text,
-                        'userId': str(message.from_user.id)})
 
 
 # Text input handler.
