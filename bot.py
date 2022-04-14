@@ -8,7 +8,7 @@ from image_editing import create_meme, create_pic_available_memes
 from inline_layout_generation import generate_meme_inline_layout, generate_page_inline_layout
 from meme_database import Memes
 
-TOKEN = os.environ['TELEGRAM_TOKEN']
+TOKEN = os.environ['5397250146:AAG6CW-uMffODcVRYeRMY9DU8G7nChJTyGc']
 
 bot = telebot.TeleBot(TOKEN)
 print('Starting bot:', bot.get_me())
